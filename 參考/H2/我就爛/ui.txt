@@ -1,0 +1,323 @@
+package wk;
+
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import javax.swing.Timer;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+//
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.print.PrinterException;
+//
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JTextArea;
+import javax.swing.JCheckBox;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class Ui extends JFrame {
+
+	
+	
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField Name;
+	private JTextField u1;
+	private JTextField v1;
+	private JTextField w1;
+	private JTextField x1;
+	private JTextField y1;
+	private JTextField z1;
+	
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Ui frame = new Ui();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Ui() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 641, 602);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(192, 192, 192));
+		panel.setBounds(10, 10, 605, 112);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("     香     腸      攤");
+		lblNewLabel.setFont(new Font("新細明體", Font.PLAIN, 58));
+		lblNewLabel.setBounds(29, 10, 483, 80);
+		panel.add(lblNewLabel);
+		
+		JLabel lblClock = new JLabel("載入中...");
+		lblClock.setFont(new Font("新細明體", Font.PLAIN, 16));
+		lblClock.setBounds(223, 90, 248, 25);
+		panel.add(lblClock);
+		
+		Timer timer=new Timer(1000, new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				Calendar calendar = Calendar.getInstance();
+				SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				lblClock.setText(sdf.format(calendar.getTime()));
+			}
+		});
+		timer.start();
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(192, 192, 192));
+		panel_1.setBounds(10, 132, 262, 421);
+		contentPane.add(panel_1);
+		panel_1.setLayout(null);
+		
+		JLabel NAME = new JLabel("訂購人");
+		NAME.setFont(new Font("新細明體", Font.PLAIN, 20));
+		NAME.setBounds(10, 10, 105, 34);
+		panel_1.add(NAME);
+		
+		JLabel U = new JLabel("香腸 40元");
+		U.setFont(new Font("新細明體", Font.PLAIN, 20));
+		U.setBounds(10, 54, 105, 34);
+		panel_1.add(U);
+		
+		JLabel V = new JLabel("米腸 30元");
+		V.setFont(new Font("新細明體", Font.PLAIN, 20));
+		V.setBounds(10, 98, 105, 34);
+		panel_1.add(V);
+		
+		JLabel W = new JLabel("大腸包小腸 70元");
+		W.setFont(new Font("新細明體", Font.PLAIN, 20));
+		W.setBounds(10, 142, 157, 34);
+		panel_1.add(W);
+		
+		JLabel X = new JLabel("叭噗 20元");
+		X.setFont(new Font("新細明體", Font.PLAIN, 20));
+		X.setBounds(10, 186, 105, 34);
+		panel_1.add(X);
+		
+		JLabel Y = new JLabel("花生捲冰 45元");
+		Y.setFont(new Font("新細明體", Font.PLAIN, 20));
+		Y.setBounds(10, 230, 157, 34);
+		panel_1.add(Y);
+		
+		JLabel Z = new JLabel("飲料 20元");
+		Z.setFont(new Font("新細明體", Font.PLAIN, 20));
+		Z.setBounds(10, 274, 105, 34);
+		panel_1.add(Z);
+		
+		JCheckBox Kainn = new JCheckBox("   熟客");
+		Kainn.setFont(new Font("新細明體", Font.PLAIN, 20));
+		Kainn.setBounds(62, 324, 105, 34);
+		panel_1.add(Kainn);
+		
+		Name = new JTextField();
+		Name.setFont(new Font("新細明體", Font.PLAIN, 20));
+		Name.setBounds(157, 10, 95, 34);
+		panel_1.add(Name);
+		Name.setColumns(10);
+		
+		u1 = new JTextField();
+		u1.setText("0");
+		u1.setFont(new Font("新細明體", Font.PLAIN, 20));
+		u1.setBounds(157, 56, 95, 34);
+		panel_1.add(u1);
+		u1.setColumns(10);
+		
+		v1 = new JTextField();
+		v1.setText("0");
+		v1.setFont(new Font("新細明體", Font.PLAIN, 20));
+		v1.setBounds(157, 100, 95, 34);
+		panel_1.add(v1);
+		v1.setColumns(10);
+		
+		w1 = new JTextField();
+		w1.setText("0");
+		w1.setFont(new Font("新細明體", Font.PLAIN, 20));
+		w1.setBounds(157, 144, 95, 34);
+		panel_1.add(w1);
+		w1.setColumns(10);
+		
+		x1 = new JTextField();
+		x1.setText("0");
+		x1.setFont(new Font("新細明體", Font.PLAIN, 20));
+		x1.setBounds(157, 188, 95, 34);
+		panel_1.add(x1);
+		x1.setColumns(10);
+		
+		y1 = new JTextField();
+		y1.setText("0");
+		y1.setFont(new Font("新細明體", Font.PLAIN, 20));
+		y1.setBounds(157, 232, 95, 34);
+		panel_1.add(y1);
+		y1.setColumns(10);
+		
+		z1 = new JTextField();
+		z1.setText("0");
+		z1.setFont(new Font("新細明體", Font.PLAIN, 20));
+		z1.setBounds(157, 276, 95, 34);
+		panel_1.add(z1);
+		z1.setColumns(10);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(new Color(192, 192, 192));
+		panel_2.setBounds(282, 132, 333, 421);
+		contentPane.add(panel_2);
+		panel_2.setLayout(null);
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setBounds(10, 146, 313, 219);
+		panel_2.add(textArea);
+		
+		JLabel lblNewLabel_1 = new JLabel("購買明細:");
+		lblNewLabel_1.setFont(new Font("新細明體", Font.PLAIN, 28));
+		lblNewLabel_1.setBounds(101, 101, 123, 42);
+		panel_2.add(lblNewLabel_1);
+		
+		/***************************EVENT************************/
+		JButton btnClear = new JButton("清除");
+		btnClear.setFont(new Font("新細明體", Font.PLAIN, 20));
+		btnClear.setBounds(10, 377, 112, 34);
+		panel_1.add(btnClear);
+		btnClear.addActionListener(e ->{
+			Name.setText("");
+			u1.setText("0");
+			v1.setText("0");
+			w1.setText("0");
+			x1.setText("0");
+			y1.setText("0");
+			z1.setText("0");
+			Kainn.setSelected(false);
+			textArea.setText("");
+		});
+		
+		JButton kakuninn = new JButton("確定");
+		kakuninn.setFont(new Font("新細明體", Font.PLAIN, 20));
+		
+		//功能設定
+		kakuninn.addMouseListener(new MouseAdapter()
+				{
+					public void mouseClicked(MouseEvent e)
+					{
+						String NAME=Name.getText();
+						String U1=u1.getText();
+						String V1=v1.getText();
+						String W1=w1.getText();
+						String X1=x1.getText();		
+						String Y1=y1.getText();
+						String Z1=z1.getText();
+						
+						int U2 = Integer.parseInt(U1);
+						int V2 = Integer.parseInt(V1);
+						int W2 = Integer.parseInt(W1);
+						int X2 = Integer.parseInt(X1);
+						int Y2 = Integer.parseInt(Y1);
+						int Z2 = Integer.parseInt(Z1);
+						
+						if(U2>=0&&V2>=0&&W2>=0&&X2>=0&&Y2>=0&&Z2>=0)
+						{
+							Ex1 ex1=new Ex1(NAME,U2,V2,W2,X2,Y2,Z2,Kainn.isSelected());
+							textArea.setText
+							(
+							"\n訂購人:"+ex1.getName()+	
+							"\n香腸:"+ex1.getU()+
+							"\n米腸:"+ex1.getV()+
+							"\n大腸包小腸:"+ex1.getW()+
+							"\n叭噗:"+ex1.getX()+
+							"\n花生捲冰:"+ex1.getY()+
+							"\n飲料:"+ex1.getZ()+
+							"\n總價:"+ex1.getSum()+
+							"\n熟客:"+ex1.isKainn()
+							);
+						}
+						else
+						{
+							textArea.setText("你莫來共我裝痟的");
+						}
+						
+					}
+				});
+		kakuninn.setBounds(140, 378, 112, 34);
+		panel_1.add(kakuninn);
+		
+		JButton btnExit = new JButton("離開");
+		btnExit.setFont(new Font("新細明體", Font.PLAIN, 20));
+		btnExit.setBounds(472, 67, 123, 35);
+		panel.add(btnExit);
+		btnExit.addActionListener(e ->{
+		//System.exit(0);
+		int result = javax.swing.JOptionPane.showConfirmDialog(
+				null,
+				"真的不再多買一點嗎？",
+				"騙人的吧",
+				javax.swing.JOptionPane.YES_NO_OPTION
+				); 
+		if (result == javax.swing.JOptionPane.YES_OPTION)
+		{
+			System.exit(0);
+		}
+		
+		});
+		
+		JButton btnPrint = new JButton("列印明細");
+		btnPrint.setFont(new Font("新細明體", Font.PLAIN, 20));
+		btnPrint.setBounds(101, 375, 123, 36);
+		panel_2.add(btnPrint);
+		btnPrint.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e)
+			{
+				try 
+				{
+					textArea.print();
+				}
+				catch (PrinterException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		});
+			
+		
+		JButton btnNewButton_3 = new JButton("跋  煙  腸");
+		btnNewButton_3.setBackground(new Color(255, 0, 0));
+		btnNewButton_3.setFont(new Font("新細明體", Font.PLAIN, 60));
+		btnNewButton_3.setBounds(10, 10, 313, 81);
+		panel_2.add(btnNewButton_3);
+		btnNewButton_3.addActionListener(e ->{
+		
+			SibalaDialog game = new SibalaDialog(this);
+			game.setVisible(true);
+		
+		});
+	}
+}

@@ -1,0 +1,61 @@
+package com;
+
+public class DoorController {
+
+	
+	private boolean isRightDoor = false;
+	private boolean firstSel = false;
+	private boolean secondSel = false;
+	
+	
+	public boolean isRightDoor() {
+		return isRightDoor;
+	}
+
+
+
+	public void setRightDoor(boolean set) {
+		this.isRightDoor = set;
+		
+	}
+
+	
+	
+	public boolean getRightDoor()
+	{
+		return isRightDoor;
+	}
+
+
+
+	public boolean isFirstSel() {
+		return firstSel;
+	}
+
+
+
+
+
+
+	public boolean isSecondSel() {
+		return secondSel;
+	}
+
+
+
+	public void setSecondSel(boolean secondSel) {
+		this.secondSel = secondSel;
+	}
+
+
+
+	public void setFirstSel(boolean firstSel2) {
+		this.firstSel = firstSel;
+		
+	}
+	
+	
+	
+	
+	
+}

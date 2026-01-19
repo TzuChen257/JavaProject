@@ -1,0 +1,60 @@
+package wk;
+import java.awt.*;
+import javax.swing.*;
+import java.util.Arrays;
+import java.util.Random;
+public class SibalaDialog extends JDialog
+{
+	private JLabel[] diceLabels = new JLabel[4];
+	private JLabel lblResult = new JLabel("來喔 愛跋才會贏!!!");
+	private int[] dice = new int[4];
+	
+	public SibalaDialog(JFrame parent)
+	{
+		super(parent,"跋煙腸",true);
+		setSize(400,300);
+		setLocationRelativeTo(parent);
+		getContentPane().setLayout(new BorderLayout());
+		
+		JPanel dicePanel = new JPanel();
+		for(int i=0;i<4;i++)
+		{
+			diceLabels[i] = new JLabel("?",SwingConstants.CENTER);
+			diceLabels[i].setFont(new Font("Arial",Font.BOLD, 40));
+			diceLabels[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			diceLabels[i].setPreferredSize(new Dimension(60,60));
+			dicePanel.add(diceLabels[i]);
+		}
+		getContentPane().add(dicePanel,BorderLayout.CENTER);
+		
+		JPanel southPanel = new JPanel(new GridLayout(2, 1));
+		lblResult.setHorizontalAlignment(SwingConstants.CENTER);
+		lblResult.setFont(new Font("新細明體", Font.PLAIN, 20));
+		southPanel.add(lblResult);
+		
+		JButton btnRoll = new JButton("沒有人賭博每天都在輸的!!");
+        btnRoll.setFont(new Font("新細明體", Font.BOLD, 20));
+        btnRoll.addActionListener(e -> rollDice());
+        southPanel.add(btnRoll);
+        
+        getContentPane().add(southPanel, BorderLayout.SOUTH);
+	}
+	
+	private void rollDice()
+	{
+		Random rand = new Random();
+		for(int i=0;i<4;i++)
+		{
+			dice[i] = rand.nextInt(6) + 1;
+			diceLabels[i].setText(String.valueOf(dice[i]));
+		}
+		calculateScore();
+	}
+	private void calculateScore()
+	{
+		Arrays.sort(dice);
+		
+		lblResult.setText("擲出點數：" + dice[0] + ", " + dice[1] + ", " + dice[2] + ", " + dice[3]);
+	}
+	
+}

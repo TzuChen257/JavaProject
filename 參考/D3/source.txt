@@ -1,0 +1,299 @@
+===========================QuoteModel===========================
+
+import java.util.ArrayList;
+import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+class Product {
+    String name;
+    int price;
+    public Product(String name, int price) { this.name = name; this.price = price; }
+    @Override
+    public String toString() { return name; }
+}
+
+class QuoteItem {
+    Product product;
+    int qty;
+    public QuoteItem(Product p, int q) { this.product = p; this.qty = q; }
+    public int getSubtotal() { return product.price * qty; }
+}
+
+public class QuoteModel {
+    private List<QuoteItem> items = new ArrayList<>();
+
+    public void addItem(Product p, int qty) { items.add(new QuoteItem(p, qty)); }
+    public void clearItems() { items.clear(); }
+    public List<QuoteItem> getItems() { return items; }
+    
+    public String getCurrentDateTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.now().format(formatter);
+    }
+    
+    public int calculateTotal(boolean isMember) {
+        int total = items.stream().mapToInt(QuoteItem::getSubtotal).sum();
+        return isMember ? (int)(total * 0.9) : total;
+    }
+}
+
+===========================QuoteController===========================
+
+import java.awt.event.*;
+import java.text.MessageFormat;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
+
+public class QuoteController {
+    private QuoteModel model;
+    private QuoteView view;
+    
+    public QuoteController(QuoteModel model, QuoteView view) {
+        this.model = model;
+        this.view = view;
+        initData();
+        bindEvents();
+        startLiveClock();
+    }
+
+    private void initData() {
+        view.txtDate.setText(model.getCurrentDateTime());
+        view.comboBox.addItem(new Product("AutoCAD", 45000));
+        view.comboBox.addItem(new Product("NX", 680000));
+        view.comboBox.addItem(new Product("Creo", 300000));
+        view.comboBox.addItem(new Product("SolidWorks", 250000));
+        updatePriceDisplay();
+    }
+    
+    private void startLiveClock() {
+        Timer timer = new Timer(1000, e -> {
+          String currentTime = model.getCurrentDateTime();
+            view.txtDate.setText(currentTime);
+        });
+        
+        timer.start();
+    }
+    
+    private void bindEvents() {
+        view.comboBox.addActionListener(e -> updatePriceDisplay());
+        view.btnAdd.addActionListener(e -> handleAdd());
+        view.btnClear.addActionListener(e -> handleClear());
+        view.btnPrint.addActionListener(e -> handlePrint());
+        view.btnClose.addActionListener(e -> handleClose());
+        // 勾選老客戶時即時重新產生報價單
+        view.chckbxMember.addActionListener(e -> refreshReport());
+    }
+
+    private void updatePriceDisplay() {
+        Product p = (Product) view.comboBox.getSelectedItem();
+        view.txtPrice.setText(String.valueOf(p.price));
+    }
+
+    private void handleAdd() {
+        try {
+            Product p = (Product) view.comboBox.getSelectedItem();
+            int qty = Integer.parseInt(view.txtQty.getText());
+            model.addItem(p, qty);
+            refreshReport();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(view, "數量請輸入數字！");
+        }
+    }
+
+    private void handleClear() {
+        model.clearItems();
+        view.txtCustomer.setText("");
+        view.txtQty.setText("1");
+        view.textArea.setText("");
+    }
+
+    private void handlePrint() {
+        try {
+            view.textArea.print(new MessageFormat("業務報價單"), new MessageFormat("頁碼 {0}"), true, null, null, true);
+        } catch (Exception ex) { ex.printStackTrace(); }
+    }
+
+    private void handleClose() {
+        int confirm = JOptionPane.showConfirmDialog(view, "確定結束？", "結束程式", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) System.exit(0);
+    }
+
+    private void refreshReport() {
+        StringBuilder sb = new StringBuilder();
+        
+        // 1. 頁首資訊
+        sb.append("==========================================\n");
+        sb.append("           項 目 報 價 單 (正式)           \n");
+        sb.append("==========================================\n");
+        sb.append(" 客戶名稱： ").append(view.txtCustomer.getText()).append("\n");
+        sb.append(" 報價日期： ").append(view.txtDate.getText()).append("\n");
+        sb.append(" 報價單號： ").append("QT-").append(System.currentTimeMillis() / 10000).append("\n");
+        sb.append("------------------------------------------\n");
+        
+        // 2. 表頭對齊 (使用固定寬度)
+        // %-14s 代表左對齊佔14格, %4s 代表右對齊
+        sb.append(String.format(" %-14s %4s %12s\n", "品名項目", "數量", "小計(TWD)"));
+        sb.append("------------------------------------------\n");
+        
+        // 3. 疊加項目
+        if (model.getItems().isEmpty()) {
+            sb.append("\n          ( 目前尚無報價項目 )          \n\n");
+        } else {
+            for (QuoteItem item : model.getItems()) {
+                sb.append(String.format(" %-16s x %2d   $%10s\n", 
+                    item.product.name, 
+                    item.qty, 
+                    String.format("%,d", item.getSubtotal()))); // 加入千分位
+            }
+        }
+        
+        sb.append("------------------------------------------\n");
+        
+        // 4. 金額計算區
+        int subTotal = model.calculateTotal(false); // 原始總價
+        int finalTotal = model.calculateTotal(view.chckbxMember.isSelected());
+        
+        sb.append(String.format(" 原始總計：             $%12s\n", String.format("%,d", subTotal)));
+        
+        if (view.chckbxMember.isSelected()) {
+            int discountAmount = subTotal - finalTotal;
+            sb.append(String.format(" 老客戶優惠 (9折)：   - $%12s\n", String.format("%,d", discountAmount)));
+        }
+        
+        sb.append("------------------------------------------\n");
+        sb.append(String.format(" 最終總計金額：         $%12s\n", String.format("%,d", finalTotal)));
+        sb.append("==========================================\n");
+        
+        // 5. 頁尾備註
+        sb.append(" 備註：\n");
+        sb.append(" 1. 本報價單有效期限為 30 天。\n");
+        sb.append(" 2. 軟體授權包含一年版本更新與線上支援。\n");
+        sb.append("\n 業務經辦人簽章：________________________\n");
+
+        view.textArea.setText(sb.toString());
+    }
+}
+
+===========================QuoteView===========================
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+
+public class QuoteView extends JFrame {
+    // 定義統一字體常數，方便日後維護
+    private final Font customFont = new Font("微軟正黑體", Font.BOLD, 16);
+    
+    public JTextField txtDate, txtCustomer, txtPrice, txtQty;
+    public JTextArea textArea;
+    public JComboBox<Product> comboBox;
+    public JCheckBox chckbxMember;
+    public JButton btnAdd, btnClear, btnPrint, btnClose;
+
+    public QuoteView() {
+        setTitle("業務報價系統 v1.0");
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setBounds(100, 100, 800, 600);
+        setResizable(false);
+        setLocationRelativeTo(null);
+        JPanel contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        // 標題部分保持原樣 (24號字)
+        JLabel lblTitle = new JLabel("業務報價系統 v1.0");
+        lblTitle.setFont(new Font("微軟正黑體", Font.BOLD, 24));
+        lblTitle.setBounds(71, 31, 200, 43);
+        contentPane.add(lblTitle);
+
+        // --- 輸入區域 (字體均改為 18 BOLD) ---
+        
+        addLabel("報價日期：", 84);
+        txtDate = new JTextField(); 
+        txtDate.setFont(customFont);
+        txtDate.setBounds(172, 84, 180, 34); 
+        txtDate.setEditable(false);
+        contentPane.add(txtDate);
+
+        addLabel("客戶名稱：", 128);
+        txtCustomer = new JTextField(); 
+        txtCustomer.setFont(customFont);
+        txtCustomer.setBounds(172, 128, 180, 34);
+        contentPane.add(txtCustomer);
+
+        addLabel("品       名：", 172);
+        comboBox = new JComboBox<>(); 
+        comboBox.setFont(customFont);
+        comboBox.setBounds(172, 172, 180, 34);
+        contentPane.add(comboBox);
+
+        addLabel("單       價：", 216);
+        txtPrice = new JTextField(); 
+        txtPrice.setFont(customFont);
+        txtPrice.setBounds(172, 216, 180, 34); 
+        txtPrice.setEditable(false);
+        contentPane.add(txtPrice);
+
+        addLabel("數       量：", 260);
+        txtQty = new JTextField("1"); 
+        txtQty.setFont(customFont);
+        txtQty.setBounds(172, 260, 180, 34);
+        contentPane.add(txtQty);
+
+        chckbxMember = new JCheckBox("老客戶優惠 (9折)");
+        chckbxMember.setFont(customFont);
+        chckbxMember.setBounds(71, 313, 250, 34);
+        contentPane.add(chckbxMember);
+
+        // --- 按鈕區域 (字體均改為 18 BOLD) ---
+        btnAdd = new JButton("新增項目"); 
+        btnAdd.setFont(customFont);
+        btnAdd.setBounds(71, 375, 130, 43); 
+        contentPane.add(btnAdd);
+
+        btnClear = new JButton("清        除"); 
+        btnClear.setFont(customFont);
+        btnClear.setBounds(220, 375, 130, 43); 
+        contentPane.add(btnClear);
+
+        btnPrint = new JButton("列        印"); 
+        btnPrint.setFont(customFont);
+        btnPrint.setBounds(71, 446, 130, 43); 
+        contentPane.add(btnPrint);
+
+        btnClose = new JButton("關閉程式"); 
+        btnClose.setFont(customFont);
+        btnClose.setBounds(220, 446, 130, 43); 
+        contentPane.add(btnClose);
+
+        // --- 報價單顯示區 ---
+        textArea = new JTextArea();
+        textArea.setFont(new Font("微軟正黑體", Font.PLAIN, 16)); // 內文建議用全形對齊，維持稍微小一點點比較美觀
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setBounds(380, 84, 380, 405);
+        contentPane.add(scrollPane);
+    }
+
+    // 輔助方法：統一產生標籤字體
+    private void addLabel(String text, int y) {
+        JLabel label = new JLabel(text);
+        label.setFont(customFont);
+        label.setBounds(71, y, 157, 34);
+        getContentPane().add(label);
+    }
+}
+===========================Main===========================
+public class Main {
+    public static void main(String[] args) {
+        // 初始化 MVC 三大組件
+        QuoteModel model = new QuoteModel();
+        QuoteView view = new QuoteView();
+        // 將 Model 與 View 交給 Controller 綁定
+        new QuoteController(model, view);
+        
+        // 顯示視窗
+        view.setVisible(true);
+    }
+}

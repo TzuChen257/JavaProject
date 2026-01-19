@@ -1,0 +1,54 @@
+package com;
+
+public class Standard {
+	
+	private String name;
+	private int gold;
+	private int normalTriket;
+	private int rareTriket;
+	
+	public Standard(String name, int gold, int normalTriket, int rareTriket) {
+		super();
+		this.name = name;
+		this.gold = gold;
+		this.normalTriket = normalTriket;
+		this.rareTriket = rareTriket;
+	}
+
+	public String getName() {
+		return name + " 先生/小姐";
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getGold() {
+		return gold;
+	}
+
+	public void setGold(int gold) {
+		this.gold = gold;
+	}
+
+	public int getNormalTriket() {
+		return normalTriket;
+	}
+
+	public void setNormalTriket(int normalTriket) {
+		this.normalTriket = normalTriket;
+	}
+
+	public int getRareTriket() {
+		return rareTriket;
+	}
+
+	public void setRareTriket(int rareTriket) {
+		this.rareTriket = rareTriket;
+	}
+	
+
+	
+	
+
+}

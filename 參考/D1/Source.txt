@@ -1,0 +1,341 @@
+=======================model===================================
+
+package com;
+
+public class Order {
+	private String name;
+	private int pendant;    
+	private int walllamp;   
+	private int floorlamp;  
+	private double sum;
+	private boolean member;
+	public Order(String name, int pendant, int walllamp, int floorlamp, boolean member) {
+		super();
+		this.name = name;
+		this.pendant = pendant;
+		this.walllamp = walllamp;
+		this.floorlamp = floorlamp;
+		this.member = member;
+		sum=pendant*10999+walllamp*7999+floorlamp*5999;
+		if(member) sum=sum*0.9;
+		
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getPendant() {
+		return pendant;
+	}
+	public void setPendant(int pendant) {
+		this.pendant = pendant;
+	}
+	public int getWalllamp() {
+		return walllamp;
+	}
+	public void setWalllamp(int walllamp) {
+		this.walllamp = walllamp;
+	}
+	public int getFloorlamp() {
+		return floorlamp;
+	}
+	public void setFloorlamp(int floorlamp) {
+		this.floorlamp = floorlamp;
+	}
+	public boolean isMember() {
+		return member;
+	}
+	public void setMember(boolean member) {
+		this.member = member;
+	}
+	public double getSum() {
+		return sum;
+	}
+	
+	
+
+}
+
+=====================event===================================
+
+package com;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class OrderUI extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField name;
+	private JTextField pendant;   // 吊燈
+	private JTextField walllamp;  // 壁燈
+	private JTextField floorlamp; // 立燈
+
+	//  三個商品的數量變數
+	int pendantCount = 0;
+	int walllampCount = 0;
+	int floorlampCount = 0;
+
+	public static void main(String[] args) {
+		OrderUI frame = new OrderUI();
+		frame.setVisible(true);
+	}
+
+	public OrderUI() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 504, 577);
+		contentPane = new JPanel();
+		contentPane.setLayout(null);
+		setContentPane(contentPane);
+
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(234, 185, 70));
+		panel.setBounds(10, 10, 470, 51);
+		contentPane.add(panel);
+		panel.setLayout(null);
+
+		JLabel lblTitle = new JLabel("LIGHTING  STORE");
+		lblTitle.setForeground(new Color(81, 61, 39));
+		lblTitle.setFont(new Font("新細明體", Font.BOLD | Font.ITALIC, 18));
+		lblTitle.setBounds(121, 9, 161, 31);
+		panel.add(lblTitle);
+
+		JLabel lblDate = new JLabel("目前時間：");
+		lblDate.setForeground(new Color(81, 61, 39));
+		lblDate.setFont(new Font("新細明體", Font.BOLD, 12));
+		lblDate.setBounds(300, 10, 180, 31);
+		panel.add(lblDate);
+
+		new Timer(1000, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				lblDate.setText("目前時間：" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			}
+		}).start();
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(154, 154, 117));
+		panel_1.setBounds(20, 69, 448, 189);
+		contentPane.add(panel_1);
+		panel_1.setLayout(null);
+
+		JLabel lblName = new JLabel("姓名");
+		lblName.setForeground(new Color(81, 61, 39));
+		lblName.setFont(new Font("新細明體", Font.BOLD, 14));
+		lblName.setBounds(45, 19, 46, 18);
+		panel_1.add(lblName);
+
+		name = new JTextField();
+		name.setBounds(144, 17, 182, 21);
+		panel_1.add(name);
+
+		pendant = new JTextField("0");
+		pendant.setBounds(194, 45, 71, 21);
+		panel_1.add(pendant);
+
+		walllamp = new JTextField("0");
+		walllamp.setBounds(194, 73, 71, 21);
+		panel_1.add(walllamp);
+
+		floorlamp = new JTextField("0");
+		floorlamp.setBounds(194, 101, 71, 21);
+		panel_1.add(floorlamp);
+
+		JCheckBox member = new JCheckBox("會員");
+		member.setForeground(new Color(81, 61, 39));
+		member.setFont(new Font("新細明體", Font.BOLD | Font.ITALIC, 12));
+		member.setBounds(101, 143, 106, 23);
+		panel_1.add(member);
+
+		JLabel lblP = new JLabel("吊燈 10999元");
+		lblP.setForeground(new Color(81, 61, 39));
+		lblP.setFont(new Font("新細明體", Font.BOLD, 14));
+		lblP.setBounds(44, 46, 98, 18);
+		panel_1.add(lblP);
+
+		JLabel lblW = new JLabel("壁燈 7999元");
+		lblW.setForeground(new Color(81, 61, 39));
+		lblW.setFont(new Font("新細明體", Font.BOLD, 14));
+		lblW.setBounds(45, 74, 94, 18);
+		panel_1.add(lblW);
+
+		JLabel lblF = new JLabel("立燈 5999元");
+		lblF.setForeground(new Color(81, 61, 39));
+		lblF.setFont(new Font("新細明體", Font.BOLD, 14));
+		lblF.setBounds(44, 102, 101, 18);
+		panel_1.add(lblF);
+
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(new Color(81, 61, 39));
+		panel_2.setBounds(10, 268, 470, 260);
+		contentPane.add(panel_2);
+		panel_2.setLayout(null);
+
+		JTextArea output = new JTextArea();
+		output.setBounds(60, 35, 339, 149);
+		panel_2.add(output);
+
+		JButton btnPrint = new JButton("列印");
+		btnPrint.setFont(new Font("新細明體", Font.BOLD | Font.ITALIC, 12));
+		btnPrint.setForeground(new Color(81, 61, 39));
+		btnPrint.setBounds(189, 204, 84, 23);
+		panel_2.add(btnPrint);
+		btnPrint.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					output.print();
+				} catch (Exception ex) {
+					output.setText("列印失敗");
+				}
+			}
+		});
+
+		JButton btnExit = new JButton("離開");
+		btnExit.setFont(new Font("新細明體", Font.BOLD | Font.ITALIC, 12));
+		btnExit.setForeground(new Color(81, 61, 39));
+		btnExit.setBounds(293, 204, 84, 23);
+		panel_2.add(btnExit);
+		btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+
+		JButton btnClear = new JButton("清除");
+		btnClear.setFont(new Font("新細明體", Font.BOLD | Font.ITALIC, 12));
+		btnClear.setForeground(new Color(81, 61, 39));
+		btnClear.setBounds(84, 204, 84, 23);
+		panel_2.add(btnClear);
+		btnClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				name.setText("");
+				member.setSelected(false);
+				output.setText("");
+				pendantCount = 0;
+				walllampCount = 0;
+				floorlampCount = 0;
+				pendant.setText("0");
+				walllamp.setText("0");
+				floorlamp.setText("0");
+			}
+		});
+
+		JButton btnConfirm = new JButton("確定");
+		btnConfirm.setFont(new Font("新細明體", Font.BOLD | Font.ITALIC, 12));
+		btnConfirm.setForeground(new Color(81, 61, 39));
+		btnConfirm.setBounds(247, 143, 106, 23);
+		panel_1.add(btnConfirm);
+
+		// ===== 各商品的 + / - 按鈕 =====
+		JButton btnPMinus = new JButton("-");
+		btnPMinus.setForeground(new Color(81, 61, 39));
+		btnPMinus.setBounds(144, 44, 44, 22);
+		panel_1.add(btnPMinus);
+
+		JButton btnPPlus = new JButton("+");
+		btnPPlus.setForeground(new Color(81, 61, 39));
+		btnPPlus.setBounds(273, 45, 53, 22);
+		panel_1.add(btnPPlus);
+
+		JButton btnWMinus = new JButton("-");
+		btnWMinus.setForeground(new Color(81, 61, 39));
+		btnWMinus.setBounds(144, 72, 44, 22);
+		panel_1.add(btnWMinus);
+
+		JButton btnWPlus = new JButton("+");
+		btnWPlus.setForeground(new Color(81, 61, 39));
+		btnWPlus.setBounds(273, 72, 53, 22);
+		panel_1.add(btnWPlus);
+
+		JButton btnFMinus = new JButton("-");
+		btnFMinus.setForeground(new Color(81, 61, 39));
+		btnFMinus.setBounds(144, 100, 44, 22);
+		panel_1.add(btnFMinus);
+
+		JButton btnFPlus = new JButton("+");
+		btnFPlus.setForeground(new Color(81, 61, 39));
+		btnFPlus.setBounds(273, 100, 53, 22);
+		panel_1.add(btnFPlus);
+
+		// ===== 吊燈加減 =====
+		btnPPlus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = 0;
+				i++;
+				pendantCount = pendantCount + i;
+				pendant.setText("" + pendantCount);
+			}
+		});
+		btnPMinus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = 0;
+				i--;
+				if (pendantCount > 0) {
+					pendantCount = pendantCount + i;
+				} else {
+					pendantCount = 0;
+				}
+				pendant.setText("" + pendantCount);
+			}
+		});
+
+		// ===== 壁燈加減 =====
+		btnWPlus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = 0;
+				i++;
+				walllampCount = walllampCount + i;
+				walllamp.setText("" + walllampCount);
+			}
+		});
+		btnWMinus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = 0;
+				i--;
+				if (walllampCount > 0) {
+					walllampCount = walllampCount + i;
+				} else {
+					walllampCount = 0;
+				}
+				walllamp.setText("" + walllampCount);
+			}
+		});
+
+		// ===== 立燈加減 =====
+		btnFPlus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = 0;
+				i++;
+				floorlampCount = floorlampCount + i;
+				floorlamp.setText("" + floorlampCount);
+			}
+		});
+		btnFMinus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = 0;
+				i--;
+				if (floorlampCount > 0) {
+					floorlampCount = floorlampCount + i;
+				} else {
+					floorlampCount = 0;
+				}
+				floorlamp.setText("" + floorlampCount);
+			}
+		});
+
+		// ===== 確定按鈕 =====
+		btnConfirm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				output.setText("名字: " + name.getText() +
+						"\n吊燈數量: " + pendantCount +
+						"\n壁燈數量: " + walllampCount +
+						"\n立燈數量: " + floorlampCount +
+						"\n會員: " + (member.isSelected() ? "是" : "否"));
+			}
+		});
+	}
+}

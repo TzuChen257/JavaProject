@@ -1,0 +1,250 @@
+package com;
+
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.print.PrinterException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.swing.Timer;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
+import java.awt.Color;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JRadioButton;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.JTextArea;
+
+public class UiTest extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textField;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private JTextField program1;
+	private JTextField program2;
+	private JTextField program3;
+	private JTextField program4;
+	private JTextField program5;
+	private JTextField program6;
+	private JTextField name;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					UiTest frame = new UiTest();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	@SuppressWarnings("null")
+	public UiTest() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 570, 542);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("timer");
+		Timer timer = new Timer(1000, (ActionListener) new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		        lblNewLabel.setText("目前時間：" + time);
+		    }
+		});
+		timer.start();
+		lblNewLabel.setBounds(334, 8, 210, 30);
+		contentPane.add(lblNewLabel);
+		
+		textField = new JTextField();
+		textField.setBounds(99, 389, 101, 30);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblNewLabel_1 = new JLabel("列印份數");
+		lblNewLabel_1.setBounds(41, 392, 48, 23);
+		contentPane.add(lblNewLabel_1);
+		
+		JRadioButton rdbtnNewRadioButton = new JRadioButton("單面列印");
+		buttonGroup.add(rdbtnNewRadioButton);
+		rdbtnNewRadioButton.setBounds(227, 396, 83, 23);
+		contentPane.add(rdbtnNewRadioButton);
+		
+		JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("雙面列印");
+		buttonGroup.add(rdbtnNewRadioButton_1);
+		rdbtnNewRadioButton_1.setBounds(312, 396, 83, 23);
+		contentPane.add(rdbtnNewRadioButton_1);
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setForeground(new Color(255, 255, 255));
+		textArea.setBackground(new Color(128, 128, 128));
+		textArea.setText("列印項目列表");
+		textArea.setBounds(10, 10, 83, 30);
+		contentPane.add(textArea);
+		
+		JRadioButton member = new JRadioButton("會員");
+		member.setBounds(410, 396, 94, 23);
+		contentPane.add(member);
+		
+		program1 = new JTextField();
+		program1.setBounds(246, 91, 96, 21);
+		contentPane.add(program1);
+		program1.setColumns(10);
+		
+		program2 = new JTextField();
+		program2.setBounds(246, 122, 96, 21);
+		contentPane.add(program2);
+		program2.setColumns(10);
+		
+		program3 = new JTextField();
+		program3.setBounds(246, 153, 96, 21);
+		contentPane.add(program3);
+		program3.setColumns(10);
+		
+		program4 = new JTextField();
+		program4.setBounds(246, 184, 96, 21);
+		contentPane.add(program4);
+		program4.setColumns(10);
+		
+		program5 = new JTextField();
+		program5.setBounds(246, 215, 96, 21);
+		contentPane.add(program5);
+		program5.setColumns(10);
+		
+		program6 = new JTextField();
+		program6.setBounds(246, 246, 96, 21);
+		contentPane.add(program6);
+		program6.setColumns(10);
+		
+		JLabel lblNewLabel_8 = new JLabel("姓名");
+		lblNewLabel_8.setBounds(126, 63, 46, 15);
+		contentPane.add(lblNewLabel_8);
+		
+		JLabel lblNewLabel_2 = new JLabel("方案1");
+		lblNewLabel_2.setBounds(126, 94, 46, 15);
+		contentPane.add(lblNewLabel_2);
+		
+		JLabel lblNewLabel_3 = new JLabel("方案2");
+		lblNewLabel_3.setBounds(126, 125, 46, 15);
+		contentPane.add(lblNewLabel_3);
+		
+		JLabel lblNewLabel_4 = new JLabel("方案3");
+		lblNewLabel_4.setBounds(126, 156, 46, 15);
+		contentPane.add(lblNewLabel_4);
+		
+		JLabel lblNewLabel_5 = new JLabel("方案4");
+		lblNewLabel_5.setBounds(126, 187, 46, 15);
+		contentPane.add(lblNewLabel_5);
+		
+		JLabel lblNewLabel_6 = new JLabel("方案5");
+		lblNewLabel_6.setBounds(126, 218, 46, 15);
+		contentPane.add(lblNewLabel_6);
+		
+		JLabel lblNewLabel_7 = new JLabel("方案6");
+		lblNewLabel_7.setBounds(126, 249, 46, 15);
+		contentPane.add(lblNewLabel_7);
+		
+		JTextArea output = new JTextArea();
+		output.setBounds(362, 48, 169, 329);
+		contentPane.add(output);
+		
+		name = new JTextField();
+		name.setBounds(246, 60, 96, 21);
+		contentPane.add(name);
+		name.setColumns(10);
+		
+		
+		JButton btnNewButton = new JButton("確定");
+		btnNewButton.addMouseListener(new MouseAdapter() 
+		{
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{
+				String Name=name.getText();
+				String Program1=program1.getText();
+				String Program2=program2.getText();
+				String Program3=program3.getText();
+				String Program4=program4.getText();
+				String Program5=program5.getText();
+				String Program6=program6.getText();
+				int PROGRAM1=Integer.parseInt(Program1);
+				int PROGRAM2=Integer.parseInt(Program2);
+				int PROGRAM3=Integer.parseInt(Program3);
+				int PROGRAM4=Integer.parseInt(Program4);
+				int PROGRAM5=Integer.parseInt(Program5);
+				int PROGRAM6=Integer.parseInt(Program6);
+				if(PROGRAM1>=0 && PROGRAM2>=0 && PROGRAM3>=0 && PROGRAM4>=0 && PROGRAM5>=0 && PROGRAM6>=0) 
+				{
+					Homework o=new Homework(Name,PROGRAM1,PROGRAM2,PROGRAM3,PROGRAM4,PROGRAM5,PROGRAM6,member.isSelected());
+					output.setText("name="+o.getName()+
+							"\n方案1:"+o.getProgram1()+
+							"\n方案2:"+o.getProgram2()+
+							"\n方案3:"+o.getProgram3()+
+							"\n方案4:"+o.getProgram4()+
+							"\n方案5:"+o.getProgram5()+
+							"\n方案6:"+o.getProgram6()+
+							"\nsum:"+o.getSum()+
+							"\nmember:"+o.isMember());
+				}
+				else 
+				{
+					output.setText("數量需大於等於0");
+				}
+			}
+		});
+		btnNewButton.setForeground(new Color(0, 0, 0));
+		btnNewButton.setBounds(176, 293, 124, 30);
+		contentPane.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("列印");
+		btnNewButton_1.setBounds(41, 447, 131, 29);
+		contentPane.add(btnNewButton_1);
+		/*
+		btnPrint.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					textArea.print();
+				} catch (PrinterException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		*/
+		JButton btnNewButton_2 = new JButton("清除");
+		btnNewButton_2.setBounds(218, 446, 124, 30);
+		contentPane.add(btnNewButton_2);
+		/*
+		AbstractButton btnClear = null ;
+		btnClear.addActionListener(e -> {
+			rdbtnNewRadioButton.setSelected(false);
+			rdbtnNewRadioButton_1.setSelected(false);
+			textArea.setText("");
+		});
+		*/
+		JButton btnNewButton_3 = new JButton("離開");
+		btnNewButton_3.setBounds(380, 446, 124, 30);
+		contentPane.add(btnNewButton_3);
+	}
+}

@@ -1,0 +1,177 @@
+package Sec;
+
+public class Order {
+	
+	private String name;
+	private String condition;
+	private int price;
+	private int qty;
+	private int sum;
+		
+	
+	public Order(String name, String condition, int price, int qty) {
+		super();
+		this.name = name;
+		this.condition = condition;
+		this.price = price;
+		this.qty = qty;
+		sum=price*qty;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getCondition() {
+		return condition;
+	}
+	public void setCondition(String condition) {
+		this.condition = condition;
+	}
+	public int getPrice() {
+		return price;
+	}
+	public void setPrice(int price) {
+		this.price = price;
+	}
+	public int getQty() {
+		return qty;
+	}
+	public void setQty(int qty) {
+		this.qty = qty;
+	}
+	public int getSum() {
+		return sum;
+	}
+	void show()
+	{
+		System.out.println("產品名:"+this.name+"\t新舊程度:"+this.condition+"\t價格:"+price+"\t數量:"+qty+"\t總額:"+sum);
+	}
+	
+}
+
+========================================event==============================
+
+
+		Timer timer = new Timer(1000, new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		        Timer.setText("Current Time " + time);
+		    }
+		});
+		timer.start();	
+	
+
+	/************Button Event****************/
+		JRadioButton brandNew = new JRadioButton("Brand-new");
+		brandNew.setBackground(new Color(255, 166, 123));
+		brandNew.setFont(new Font("Cambria", Font.PLAIN, 12));
+		buttonGroup.add(brandNew);
+		brandNew.addMouseListener(new MouseAdapter() {
+			//@Override
+			public void mouseClicked(MouseEvent e) {
+				String msgBN=brandNew.getText();
+				condInput.setText(msgBN);			
+			}
+		});
+		brandNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		brandNew.setBounds(104, 58, 96, 23);
+		panel_1.add(brandNew);
+		
+		JRadioButton used = new JRadioButton("Used");
+		used.setBackground(new Color(255, 166, 123));
+		used.setFont(new Font("Cambria", Font.PLAIN, 12));
+		buttonGroup.add(used);
+		used.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String msgU=used.getText();
+				condInput.setText(msgU);	
+			}
+		});
+		used.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		used.setBounds(218, 58, 77, 23);
+		panel_1.add(used);
+		
+		JRadioButton likeNew = new JRadioButton("Like-new");
+		likeNew.setBackground(new Color(255, 166, 123));
+		likeNew.setFont(new Font("Cambria", Font.PLAIN, 12));
+		buttonGroup.add(likeNew);
+		likeNew.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String msgLK=likeNew.getText();
+				condInput.setText(msgLK);	
+			}
+		});
+		likeNew.setBounds(104, 83, 96, 23);
+		panel_1.add(likeNew);
+		
+		JRadioButton vintage = new JRadioButton("Vintage");
+		vintage.setBackground(new Color(255, 166, 123));
+		vintage.setFont(new Font("Cambria", Font.PLAIN, 12));
+		vintage.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String msgV=vintage.getText();
+				condInput.setText(msgV);	
+			}
+		});
+		buttonGroup.add(vintage);
+		vintage.setBounds(218, 82, 77, 23);
+		panel_1.add(vintage);
+		
+	
+		JButton btnCheck = new JButton("Check");
+		btnCheck.setBounds(234, 10, 77, 23);
+		btnCheck.setBackground(new Color(255, 255, 255));
+		btnCheck.setFont(new Font("Cambria", Font.PLAIN, 12));
+		panel_2.add(btnCheck);
+		
+		JButton btnExit = new JButton("Exit");
+		btnExit.setBounds(234, 100, 77, 23);
+		btnExit.setBackground(new Color(255, 255, 255));
+		btnExit.setFont(new Font("Cambria", Font.PLAIN, 12));
+		btnExit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.exit(0);
+			}
+		});
+		panel_2.add(btnExit);
+		
+		JButton btnClear = new JButton("Clear");
+		btnClear.setBounds(234, 70, 77, 23);
+		btnClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				sumOutput.setText(" ");
+			}
+		});
+		btnClear.setBackground(new Color(255, 255, 255));
+		btnClear.setFont(new Font("Cambria", Font.PLAIN, 12));
+		panel_2.add(btnClear);
+	
+		JButton btnPrint = new JButton("Print");
+		btnPrint.setBounds(234, 40, 77, 23);
+		btnPrint.setBackground(new Color(255, 255, 255));
+		panel_2.add(btnPrint);
+		btnPrint.setFont(new Font("Cambria", Font.PLAIN, 12));			
+		
+		
+		btnPrint.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					sumOutput.print();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}

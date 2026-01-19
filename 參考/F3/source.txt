@@ -1,0 +1,475 @@
+================================================================================
+TravelModel.java
+================================================================================
+package travel;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+abstract class BaseModel {
+    abstract String[] getLocationArray();
+}
+
+public class TravelModel extends BaseModel {
+    private String[] taiwanLocations = {
+        "基隆", "台北", "新北", "桃園", "新竹", "苗栗", "台中", "彰化", "南投", "雲林", 
+        "嘉義", "台南", "高雄", "屏東", "宜蘭", "花蓮", "台東", "澎湖", "金門", "馬祖"
+    };
+    
+    private String[] spots = {
+        "廟口夜市", "台北101", "九份老街", "大溪老街", "城隍廟", "龍騰斷橋", "逢甲夜市", "鹿港小鎮", "日月潭", "劍湖山", 
+        "阿里山", "安平古堡", "愛河", "墾丁大街", "羅東夜市", "太魯閣", "伯朗大道", "跨海大橋", "莒光樓", "藍眼淚"
+    };
+
+    private String location;
+    private String temperatureStr;
+    private String transport;
+
+    @Override
+    public String[] getLocationArray() {
+        return taiwanLocations;
+    }
+
+    public boolean isValidTemperature(String tempStr) {
+        try {
+            double t = Double.parseDouble(tempStr);
+            return t >= 0 && t <= 40;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    
+    public String getSpot(String loc) {
+        for(int i=0; i<taiwanLocations.length; i++) {
+            if(taiwanLocations[i].equals(loc)) {
+                return spots[i];
+            }
+        }
+        return "著名景點";
+    }
+
+    public BufferedImage getItemImage(String tempStr, String transport) {
+        int w = 400;
+        int h = 400;
+        BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = img.getGraphics();
+
+        g.setColor(new Color(255, 250, 205)); 
+        g.fillRect(0, 0, w, h);
+        g.setColor(new Color(210, 180, 140)); 
+        g.drawRect(0, 0, w-1, h-1);
+
+        double temp = Double.parseDouble(tempStr);
+        String spotName = getSpot(location);
+        
+        g.setFont(new Font("微軟正黑體", Font.BOLD, 18));
+        
+        if (temp >= 28) { 
+            g.setColor(Color.BLACK); 
+            g.fillOval(40, 50, 50, 30); 
+            g.fillOval(100, 50, 50, 30); 
+            g.drawLine(90, 65, 100, 65); 
+            g.drawString("太陽眼鏡", 50, 100);
+            
+            g.setColor(new Color(255, 100, 100)); 
+            g.fillArc(240, 40, 80, 70, 0, 180); 
+            g.setColor(Color.BLACK);
+            g.fillRect(275, 75, 10, 40); 
+            g.drawString("遮陽傘", 250, 135);
+            
+            g.setColor(Color.ORANGE); 
+            g.fillRect(70, 160, 40, 60);
+            g.setColor(Color.BLUE); 
+            g.fillRect(70, 220, 40, 15);
+            g.setColor(Color.BLACK);
+            g.drawString("防曬乳", 60, 255);
+
+        } else if (temp < 20) { 
+            g.setColor(new Color(100, 100, 255)); 
+            g.fillArc(50, 40, 80, 80, 0, 180);
+            g.fillOval(75, 20, 30, 30); 
+            g.setColor(Color.BLACK);
+            g.drawString("毛帽", 70, 100);
+            
+            g.setColor(new Color(200, 50, 50)); 
+            g.fillRect(240, 50, 80, 30); 
+            g.fillRect(270, 50, 30, 80); 
+            g.setColor(Color.BLACK);
+            g.drawString("圍巾", 260, 150);
+            
+            g.setColor(Color.WHITE); 
+            g.fillRect(70, 170, 60, 50);
+            g.setColor(Color.LIGHT_GRAY);
+            g.drawRect(70, 170, 60, 50);
+            g.setColor(Color.RED);
+            g.drawString("HOT", 80, 200);
+            g.setColor(Color.BLACK);
+            g.drawString("暖暖包", 70, 250);
+            
+        } else { 
+            g.setColor(new Color(50, 150, 50)); 
+            g.fillArc(60, 40, 80, 80, 0, 180);
+            g.fillRect(100, 70, 50, 10); 
+            g.setColor(Color.BLACK);
+            g.drawString("遮陽帽", 70, 100);
+            
+            g.setColor(Color.CYAN); 
+            g.fillRect(260, 50, 40, 80);
+            g.setColor(Color.GRAY);
+            g.fillRect(265, 35, 30, 15); 
+            g.setColor(Color.BLACK);
+            g.drawString("水壺", 260, 155); 
+            
+            g.setColor(Color.DARK_GRAY); 
+            g.fillRect(60, 180, 70, 50);
+            g.setColor(Color.BLACK);
+            g.fillOval(80, 190, 30, 30); 
+            g.drawString("相機", 75, 250);
+        }
+
+        int boxY = 180;
+        int boxX = 210;
+        
+        g.setColor(new Color(230, 230, 250)); 
+        g.fillRect(boxX, boxY, 170, 120); 
+        g.setColor(new Color(100, 100, 180)); 
+        g.drawRect(boxX, boxY, 170, 120);
+        
+        g.setColor(new Color(100, 100, 180));
+        g.setFont(new Font("微軟正黑體", Font.BOLD, 16));
+        g.drawString("【交通提醒】", boxX + 35, boxY + 20); 
+
+        if (transport.equals("自行開車")) {
+            g.setColor(new Color(255, 99, 71)); 
+            g.fillRect(230, boxY + 40, 80, 30); 
+            g.fillRect(245, boxY + 25, 50, 15); 
+            g.setColor(Color.BLACK);
+            g.fillOval(240, boxY + 65, 15, 15); 
+            g.fillOval(285, boxY + 65, 15, 15); 
+            
+            g.setColor(Color.GRAY);
+            g.fillRect(330, boxY + 50, 30, 10); 
+            g.fillOval(320, boxY + 45, 15, 20);
+            
+            g.setColor(Color.BLACK);
+            g.drawString("車鑰匙", 265, boxY + 100); 
+        } else {
+            g.setColor(new Color(60, 179, 113)); 
+            g.fillRect(230, boxY + 30, 90, 50); 
+            g.setColor(Color.CYAN); 
+            g.fillRect(235, boxY + 35, 20, 15);
+            g.fillRect(260, boxY + 35, 20, 15);
+            g.fillRect(285, boxY + 35, 20, 15);
+            g.setColor(Color.BLACK);
+            g.fillOval(240, boxY + 75, 15, 15); 
+            g.fillOval(290, boxY + 75, 15, 15);
+            
+            g.setColor(new Color(65, 105, 225));
+            g.fillRect(330, boxY + 40, 30, 20); 
+            g.setColor(Color.YELLOW);
+            g.fillRect(335, boxY + 45, 5, 5);
+            
+            g.setColor(Color.BLACK);
+            g.drawString("悠遊卡", 265, boxY + 105); 
+        }
+
+        g.setColor(new Color(101, 67, 33)); 
+        g.setFont(new Font("微軟正黑體", Font.BOLD, 20));
+        
+        int textX = 40;
+        int textY = 320; 
+        g.drawString("地點: " + location, textX, textY);
+        g.drawString("推薦: " + spotName, textX, textY + 30);
+        g.drawString("交通: " + transport, textX, textY + 60);
+        
+        if (temp >= 28) g.setColor(Color.RED);
+        else if (temp < 20) g.setColor(Color.BLUE);
+        else g.setColor(new Color(0, 100, 0));
+        
+        g.drawString("氣溫: " + temp + "°C", 220, textY + 60); 
+
+        g.dispose();
+        return img;
+    }
+
+    public void setData(String location, String temp, String transport) {
+        this.location = location;
+        this.temperatureStr = temp;
+        this.transport = transport;
+    }
+}
+
+
+================================================================================
+TravelView.java
+================================================================================
+package travel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.print.*;
+
+public class TravelView extends JFrame implements Printable {
+    JComboBox<String> locBox; 
+    JTextField tempField;
+    JLabel timeLabel, imageLabel, errorTempLabel; 
+    JButton btnConfirm, btnClear, btnPrint, btnClose;
+    
+    JRadioButton rbtnCar, rbtnPublic;
+    ButtonGroup transportGroup;
+
+    Color bgColor = new Color(240, 230, 140); 
+    Color fontColor = new Color(101, 67, 33); 
+    Color btnColor = new Color(139, 69, 19);  
+    Color btnTextColor = new Color(255, 250, 240); 
+
+    public TravelView() {
+        setTitle("台灣旅遊指南");
+        setSize(850, 600); 
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(null); 
+        getContentPane().setBackground(bgColor);
+
+        JLabel titleLabel = new JLabel("台灣旅遊指南", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("微軟正黑體", Font.BOLD, 32));
+        titleLabel.setForeground(fontColor);
+        titleLabel.setBounds(150, 10, 500, 50);
+        add(titleLabel);
+
+        timeLabel = new JLabel("目前時間: 載入中...");
+        timeLabel.setFont(new Font("微軟正黑體", Font.PLAIN, 16));
+        timeLabel.setForeground(fontColor);
+        timeLabel.setBounds(50, 80, 300, 30);
+        add(timeLabel);
+
+        JLabel lblLoc = new JLabel("旅遊地點:");
+        lblLoc.setFont(new Font("微軟正黑體", Font.BOLD, 18));
+        lblLoc.setForeground(fontColor);
+        lblLoc.setBounds(50, 130, 100, 30);
+        add(lblLoc);
+
+        locBox = new JComboBox<>();
+        locBox.setBounds(150, 130, 150, 30);
+        locBox.setFont(new Font("微軟正黑體", Font.PLAIN, 16));
+        locBox.setBackground(Color.WHITE); 
+        add(locBox);
+
+        JLabel lblTransport = new JLabel("交通方式:");
+        lblTransport.setFont(new Font("微軟正黑體", Font.BOLD, 18));
+        lblTransport.setForeground(fontColor);
+        lblTransport.setBounds(50, 180, 100, 30);
+        add(lblTransport);
+
+        rbtnCar = new JRadioButton("自行開車");
+        rbtnPublic = new JRadioButton("大眾運輸");
+        rbtnCar.setBackground(bgColor); 
+        rbtnPublic.setBackground(bgColor);
+        rbtnCar.setForeground(fontColor); 
+        rbtnPublic.setForeground(fontColor);
+        rbtnCar.setFont(new Font("微軟正黑體", Font.PLAIN, 16));
+        rbtnPublic.setFont(new Font("微軟正黑體", Font.PLAIN, 16));
+        
+        rbtnCar.setSelected(true);
+        rbtnCar.setBounds(150, 180, 100, 30);
+        rbtnPublic.setBounds(250, 180, 100, 30);
+        
+        transportGroup = new ButtonGroup();
+        transportGroup.add(rbtnCar);
+        transportGroup.add(rbtnPublic);
+        add(rbtnCar);
+        add(rbtnPublic);
+
+        JLabel lblTemp = new JLabel("當地氣溫:");
+        lblTemp.setFont(new Font("微軟正黑體", Font.BOLD, 18));
+        lblTemp.setForeground(fontColor);
+        lblTemp.setBounds(50, 230, 100, 30);
+        add(lblTemp);
+
+        tempField = new JTextField();
+        tempField.setBounds(150, 230, 150, 30);
+        tempField.setFont(new Font("Arial", Font.PLAIN, 16));
+        add(tempField);
+
+        JLabel lblDegree = new JLabel("°C");
+        lblDegree.setFont(new Font("Arial", Font.BOLD, 18));
+        lblDegree.setForeground(fontColor);
+        lblDegree.setBounds(310, 230, 30, 30);
+        add(lblDegree);
+
+        errorTempLabel = new JLabel("");
+        errorTempLabel.setForeground(Color.RED); 
+        errorTempLabel.setFont(new Font("微軟正黑體", Font.BOLD, 14));
+        errorTempLabel.setBounds(150, 260, 250, 20);
+        add(errorTempLabel);
+
+        imageLabel = new JLabel("輸入資訊後顯示建議物品", SwingConstants.CENTER);
+        imageLabel.setBorder(BorderFactory.createLineBorder(fontColor, 2));
+        imageLabel.setBackground(Color.WHITE);
+        imageLabel.setOpaque(true);
+        imageLabel.setFont(new Font("微軟正黑體", Font.PLAIN, 16)); 
+        imageLabel.setForeground(Color.GRAY);
+        imageLabel.setBounds(400, 80, 400, 400); 
+        add(imageLabel);
+
+        int btnY = 500;
+        
+        btnConfirm = createStyledButton("確認", 100, btnY);
+        add(btnConfirm);
+
+        btnClear = createStyledButton("清除", 250, btnY);
+        add(btnClear);
+
+        btnPrint = createStyledButton("列印", 400, btnY);
+        add(btnPrint);
+
+        btnClose = createStyledButton("關閉", 550, btnY);
+        add(btnClose);
+    }
+    
+    private JButton createStyledButton(String text, int x, int y) {
+        JButton btn = new JButton(text);
+        btn.setBounds(x, y, 100, 40);
+        btn.setFont(new Font("微軟正黑體", Font.BOLD, 16));
+        btn.setBackground(btnColor);      
+        btn.setForeground(btnTextColor);  
+        btn.setFocusPainted(false);       
+        return btn;
+    }
+    
+    @Override
+    public int print(Graphics g, PageFormat pf, int page) throws PrinterException {
+        if (page > 0) return NO_SUCH_PAGE;
+        
+        Graphics2D g2d = (Graphics2D)g;
+        g2d.translate(pf.getImageableX(), pf.getImageableY());
+        
+        g.setColor(Color.BLACK); 
+        g.setFont(new Font("微軟正黑體", Font.BOLD, 20));
+        g.drawString("台灣旅遊指南清單", 100, 50);
+        g.drawString("地點: " + locBox.getSelectedItem(), 100, 100);
+        g.drawString("氣溫: " + tempField.getText() + "°C", 100, 140);
+        
+        String trans = rbtnCar.isSelected() ? "自行開車" : "大眾運輸";
+        g.drawString("交通: " + trans, 100, 180);
+        
+        if(imageLabel.getIcon() != null) {
+            Icon icon = imageLabel.getIcon();
+            if(icon instanceof ImageIcon) {
+                 g.drawImage(((ImageIcon)icon).getImage(), 100, 220, 350, 350, null);
+            }
+        }
+        return PAGE_EXISTS;
+    }
+}
+
+
+================================================================================
+TravelController.java
+================================================================================
+package travel;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.ImageIcon;
+import javax.swing.Timer;
+
+public class TravelController {
+    private TravelModel model;
+    private TravelView view;
+
+    public TravelController(TravelModel model, TravelView view) {
+        this.model = model;
+        this.view = view;
+
+        String[] locations = model.getLocationArray();
+        for(String loc : locations) {
+            view.locBox.addItem(loc);
+        }
+
+        Timer timer = new Timer(1000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                view.timeLabel.setText("目前時間：" + time);
+            }
+        });
+        timer.start();
+
+        initButtonEvents();
+    }
+
+    private void initButtonEvents() {
+        view.btnConfirm.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                view.errorTempLabel.setText("");
+
+                String loc = (String) view.locBox.getSelectedItem(); 
+                
+                String tempStr = view.tempField.getText();
+                
+                String transport = view.rbtnCar.isSelected() ? "自行開車" : "大眾運輸";
+
+                boolean isTempValid = model.isValidTemperature(tempStr);
+
+                if (!isTempValid) {
+                    view.errorTempLabel.setText("錯誤: 請輸入 0~40 之間的數字");
+                } else {
+                    model.setData(loc, tempStr, transport);
+                    view.imageLabel.setText(""); 
+                    view.imageLabel.setIcon(new ImageIcon(model.getItemImage(tempStr, transport)));
+                }
+            }
+        });
+
+        view.btnClear.addActionListener(e -> {
+            view.locBox.setSelectedIndex(0);
+            view.tempField.setText("");
+            view.errorTempLabel.setText("");
+            view.rbtnCar.setSelected(true); 
+            view.imageLabel.setIcon(null);
+            view.imageLabel.setText("輸入資訊後顯示建議物品");
+        });
+
+        view.btnPrint.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                PrinterJob job = PrinterJob.getPrinterJob();
+                job.setPrintable(view);
+                if (job.printDialog()) {
+                    try {
+                        job.print();
+                    } catch (PrinterException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        view.btnClose.addActionListener(e -> {
+            System.exit(0);
+        });
+    }
+}
+
+
+================================================================================
+Main.java
+================================================================================
+package travel;
+
+public class Main {
+    public static void main(String[] args) {
+        TravelModel model = new TravelModel();
+        
+        TravelView view = new TravelView();
+        
+        new TravelController(model, view);
+
+        view.setVisible(true);
+    }
+}

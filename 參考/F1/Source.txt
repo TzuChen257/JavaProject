@@ -1,0 +1,303 @@
+﻿package com;
+
+	public class Plan {
+		private String name;
+		private double militarypress;
+		private double deadlift;
+		private double benchpress;
+		private double backsquat;
+		private boolean week1;
+		private boolean week2;
+		private boolean week3;
+		private boolean week4;
+		public Plan(String name, double militarypress, double deadlift, double benchpress, double backsquat ,boolean week1 ,boolean week2 ,boolean week3 ,boolean week4) {
+			super();
+			this.name = name;
+			this.militarypress = militarypress;
+			this.deadlift = deadlift;
+			this.benchpress = benchpress;
+			this.backsquat = backsquat;
+			this.week1 = week1;
+			this.week2 = week2;
+			this.week3 = week3;
+			this.week4 = week4;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public double getMilitarypress() {
+			return militarypress;
+		}
+		public void setMilitarypress(double militarypress) {
+			this.militarypress = militarypress;
+		}
+		public double getDeadlift() {
+			return deadlift;
+		}
+		public void setDeadlift(double deadlift) {
+			this.deadlift = deadlift;
+		}
+		public double getBenchpress() {
+			return benchpress;
+		}
+		public void setBenchpress(double benchpress) {
+			this.benchpress = benchpress;
+		}
+		public double getBacksquat() {
+			return backsquat;
+		}
+		public void setBacksquat(double backsquat) {
+			this.backsquat = backsquat;
+		}
+		public boolean isWeek1() {
+			return week1;
+		}
+		public void setWeek1(boolean week1) {
+			this.week1 = week1;
+		}
+		public boolean isWeek2() {
+			return week2;
+		}
+		public void setWeek2(boolean week2) {
+			this.week2 = week2;
+		}
+		public boolean isWeek3() {
+			return week3;
+		}
+		public void setWeek3(boolean week3) {
+			this.week3 = week3;
+		}
+		public boolean isWeek4() {
+			return week4;
+		}
+		public void setWeek4(boolean week4) {
+			this.week4 = week4;
+		}
+		
+}
+
+==================================================event=============================================================================
+		/*********************event*****************************/
+		JButton btnNewButton = new JButton("計算");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int week = 0;
+
+				if (week1.isSelected()) {
+				    week = 1;
+				} else if (week2.isSelected()) {
+				    week = 2;
+				} else if (week3.isSelected()) {
+				    week = 3;
+				} else if (week4.isSelected()) {
+				    week = 4;
+				}
+
+				if (week == 0) {
+				    output.setText("請先選擇 訓練週次");
+				} else {
+					double mp = 0, dl = 0, bp = 0, sq = 0;
+
+					try {
+					    mp = Double.parseDouble(militarypress.getText().trim());
+					    dl = Double.parseDouble(deadlift.getText().trim());
+					    bp = Double.parseDouble(benchpress.getText().trim());
+					    sq = Double.parseDouble(backsquat.getText().trim());
+					} catch (Exception ex) {
+					    output.setText("請輸入數字（公斤），不要空白或文字");
+					    return;
+					}
+
+					// Training Max = 90% PR
+					double mpTM = mp * 0.9;
+					double dlTM = dl * 0.9;
+					double bpTM = bp * 0.9;
+					double sqTM = sq * 0.9;
+
+					// 依週次決定百分比與次數
+					double p1 = 0, p2 = 0, p3 = 0;
+					String r1 = "", r2 = "", r3 = "";
+
+					if (week == 1) {
+					    p1 = 0.65; p2 = 0.75; p3 = 0.85;
+					    r1 = "5";  r2 = "5";  r3 = "5+盡可能做";
+					} else if (week == 2) {
+					    p1 = 0.70; p2 = 0.80; p3 = 0.90;
+					    r1 = "3";  r2 = "3";  r3 = "3+盡可能做";
+					} else if (week == 3) {
+					    p1 = 0.75; p2 = 0.85; p3 = 0.95;
+					    r1 = "5";  r2 = "3";  r3 = "1+盡可能做";
+					} else { // week == 4
+					    p1 = 0.40; p2 = 0.50; p3 = 0.60;
+					    r1 = "5";  r2 = "5";  r3 = "5";
+					}
+
+					// 輸出
+					output.setText("");   // 重新計算時 先清除前次畫面
+					output.append("訓練計畫 Week " + week + "\n");
+					output.append("TM = 90% PR\n\n");
+
+					// 肩推
+					output.append("肩推\n");
+					output.append((int)(p1*100) + "% x " + r1 + " = " + String.format("%.1f", mpTM * p1) + " kg\n");
+					output.append((int)(p2*100) + "% x " + r2 + " = " + String.format("%.1f", mpTM * p2) + " kg\n");
+					output.append((int)(p3*100) + "% x " + r3 + " = " + String.format("%.1f", mpTM * p3) + " kg\n\n");
+
+					// 硬舉
+					output.append("硬舉\n");
+					output.append((int)(p1*100) + "% x " + r1 + " = " + String.format("%.1f", dlTM * p1) + " kg\n");
+					output.append((int)(p2*100) + "% x " + r2 + " = " + String.format("%.1f", dlTM * p2) + " kg\n");
+					output.append((int)(p3*100) + "% x " + r3 + " = " + String.format("%.1f", dlTM * p3) + " kg\n\n");
+
+					// 握推
+					output.append("握推\n");
+					output.append((int)(p1*100) + "% x " + r1 + " = " + String.format("%.1f", bpTM * p1) + " kg\n");
+					output.append((int)(p2*100) + "% x " + r2 + " = " + String.format("%.1f", bpTM * p2) + " kg\n");
+					output.append((int)(p3*100) + "% x " + r3 + " = " + String.format("%.1f", bpTM * p3) + " kg\n\n");
+
+					// 深蹲
+					output.append("深蹲\n");
+					output.append((int)(p1*100) + "% x " + r1 + " = " + String.format("%.1f", sqTM * p1) + " kg\n");
+					output.append((int)(p2*100) + "% x " + r2 + " = " + String.format("%.1f", sqTM * p2) + " kg\n");
+					output.append((int)(p3*100) + "% x " + r3 + " = " + String.format("%.1f", sqTM * p3) + " kg\n");
+				}
+			}
+		});
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnNewButton.setBounds(10, 10, 85, 23);
+		panel_2.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("清除");
+		btnNewButton_1.addActionListener(e -> {
+		    militarypress.setText("");
+		    deadlift.setText("");
+		    benchpress.setText("");
+		    backsquat.setText("");
+		    output.setText("");
+		    buttonGroup.clearSelection();
+		});
+		
+		
+		
+		btnNewButton_1.setBounds(101, 10, 85, 23);
+		panel_2.add(btnNewButton_1);
+		
+		JButton btnNewButton_1_1 = new JButton("列印");
+		btnNewButton_1_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+						output.print();
+				} catch (PrinterException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+		});
+		btnNewButton_1_1.setBounds(196, 10, 85, 23);
+		panel_2.add(btnNewButton_1_1);
+		
+		JButton btnNewButton_1_2 = new JButton("關閉");
+		btnNewButton_1_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.exit(0);
+			}
+		});
+		btnNewButton_1_2.setBounds(291, 10, 85, 23);
+		panel_2.add(btnNewButton_1_2);
+		
+		
+		/////////////////////計算最大重量////////////////////////////////
+		JButton btnNewButton_2 = new JButton("計算");
+		btnNewButton_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				 output2.setText("");
+				 try {  // ===== 肩推 =====
+			            double weight = Double.parseDouble(txtMpWeight.getText().trim());
+			            int reps = Integer.parseInt(txtMpReps.getText().trim());
+
+			            double pr = weight * (1 + reps / 30.0);
+
+			            output2.append("肩推 回推 PR 約為：" + String.format("%.1f", pr) + " kg\n");
+			            // ===== 硬舉 =====
+			            double dlW = Double.parseDouble(txtDlWeight.getText().trim());
+			            int dlR = Integer.parseInt(txtDlReps.getText().trim());
+			            double dlPR = dlW * (1 + dlR / 30.0);
+			            output2.append("硬舉 回推 PR 約為：" 
+			                    + String.format("%.1f", dlPR) + " kg\n");
+
+			            // ===== 握推 =====
+			            double bpW = Double.parseDouble(txtBpWeight.getText().trim());
+			            int bpR = Integer.parseInt(txtBpReps.getText().trim());
+			            double bpPR = bpW * (1 + bpR / 30.0);
+			            output2.append("握推 回推 PR 約為：" 
+			                    + String.format("%.1f", bpPR) + " kg\n");
+
+			            // ===== 深蹲 =====
+			            double sqW = Double.parseDouble(txtSqWeight.getText().trim());
+			            int sqR = Integer.parseInt(txtSqReps.getText().trim());
+			            double sqPR = sqW * (1 + sqR / 30.0);
+			            output2.append("深蹲 回推 PR 約為：" 
+			                    + String.format("%.1f", sqPR) + " kg\n");
+			          } catch (Exception ex) {
+			            output2.setText("請正確輸入重量與次數");
+				
+			            }
+				
+			}
+		});
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		
+		
+		
+		btnNewButton_2.setBounds(10, 10, 73, 23);
+		panel_5.add(btnNewButton_2);
+		
+		JButton btnNewButton_2_1 = new JButton("清除");
+		btnNewButton_2_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// 清空 PR 區四個動作的重量與次數
+		        txtMpWeight.setText("");
+		        txtMpReps.setText("");
+
+		        txtDlWeight.setText("");
+		        txtDlReps.setText("");
+
+		        txtBpWeight.setText("");
+		        txtBpReps.setText("");
+
+		        txtSqWeight.setText("");
+		        txtSqReps.setText("");
+
+		        // 清空 PR 輸出結果
+		        output2.setText("");
+				
+				
+			}
+		});
+		btnNewButton_2_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnNewButton_2_1.setBounds(93, 10, 70, 23);
+		panel_5.add(btnNewButton_2_1);
+		
+	}
+}
+	
+

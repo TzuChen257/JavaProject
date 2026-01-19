@@ -1,0 +1,268 @@
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import java.awt.event.*;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class JavaCafeApp extends JFrame {
+
+	private JPanel contentPane;
+	private JTextArea orderDetailsArea;
+	private JLabel lblOrderNo, lblTime;
+	private int orderCounter = 1;
+	private JRadioButton rdIn, rdOut;
+
+	private JTextField[] qtys = new JTextField[8];
+	private ButtonGroup[] tempGroups = new ButtonGroup[8]; // 熱/冰選項群組
+
+	private String[] names = { "Java Special", "Espresso", "東方美人 GreenTea", "紅玉 Ruby", "馬卡龍 Macaron", "可頌 Croissant",
+			"驢打滾 Roll", "車輪餅 Wheel" };
+	private int[] prices = { 180, 120, 150, 150, 150, 120, 120, 120 };
+	private String[] iconNames = { "java.png", "espresso.png", "oriental.png", "ruby.png", "macaron.png",
+			"croissant.png", "roll.png", "wheel.png" };
+
+	public static void main(String[] args) {
+		EventQueue.invokeLater(() -> {
+			try {
+				JavaCafeApp frame = new JavaCafeApp();
+				frame.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	public JavaCafeApp() {
+		setTitle("Java Cafe POS - 圖文整合版");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(80,80, 660, 850);
+
+		contentPane = new JPanel();
+		contentPane.setBackground(new Color(245, 245, 245));
+		contentPane.setLayout(null);
+		setContentPane(contentPane);
+
+		// --- 標題區 ---
+		JPanel header = new JPanel(null);
+		header.setBackground(new Color(60, 40, 30));
+		header.setBounds(0, 0, 450, 210);
+		contentPane.add(header);
+
+		JLabel lblTitle = new JLabel("<html>Java Cafe<br>& Tea</html>");
+		lblTitle.setForeground(Color.WHITE);
+		lblTitle.setFont(new Font("Arial Black", Font.BOLD | Font.ITALIC, 48));
+		lblTitle.setBounds(15, 0, 300, 150);
+		header.add(lblTitle);
+
+		// --- 漂浮咖啡圖示 ---
+		ImageIcon rawIcon = new ImageIcon("icons/title_coffee.png");
+		Image scaledImg = rawIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+		JLabel coffeeIcon = new JLabel(new ImageIcon(scaledImg));
+
+		// 設定座標超出 header 範圍，讓它漂浮在外面
+		coffeeIcon.setBounds(250, 60, 200, 200); 
+		contentPane.add(coffeeIcon); // 注意：加到 contentPane，而不是 header
+		getLayeredPane().add(coffeeIcon, JLayeredPane.PALETTE_LAYER);
+
+
+		// --- 商品列 ---
+		for (int i = 0; i < 8; i++) {
+			int yPos = 240 + (i * 55);
+
+			JPanel itemPanel = new JPanel(null);
+			itemPanel.setBackground(new Color(230, 230, 230));
+			itemPanel.setBounds(0, yPos - 5, 450, 50);
+			contentPane.add(itemPanel);
+
+			ImageIcon rawIcon1 = new ImageIcon("icons/" + iconNames[i]);
+			Image scaledImg1 = rawIcon1.getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH);
+			JLabel iconLabel = new JLabel(new ImageIcon(scaledImg1));
+			iconLabel.setBounds(5, 5, 45, 45);
+			itemPanel.add(iconLabel);
+
+
+			JLabel nameLabel = new JLabel(names[i] + " $" + prices[i]);
+			nameLabel.setBounds(60, 5, 250, 30);
+			nameLabel.setFont(new Font("微軟正黑體", Font.BOLD, 16));
+			itemPanel.add(nameLabel);
+
+			// 熱/冰選項只給前四項飲料
+			if (i < 4) {
+				JRadioButton hot = new JRadioButton("熱", true);
+				JRadioButton cold = new JRadioButton("冰");
+				hot.setActionCommand("熱");
+				cold.setActionCommand("冰");
+
+				ButtonGroup tempGroup = new ButtonGroup();
+				tempGroup.add(hot);
+				tempGroup.add(cold);
+				tempGroups[i] = tempGroup;
+
+				hot.setBounds(252, 10, 40, 30);
+				cold.setBounds(292, 10, 40, 30);
+				itemPanel.add(hot);
+				itemPanel.add(cold);
+			}
+
+			JButton btnMinus = new JButton("-");
+			btnMinus.setBounds(335, 10, 30, 30);
+			btnMinus.setMargin(new Insets(0, 0, 0, 0));
+			itemPanel.add(btnMinus);
+
+			qtys[i] = new JTextField("0");
+			qtys[i].setBounds(370, 10, 30, 30);
+			qtys[i].setHorizontalAlignment(JTextField.CENTER);
+			qtys[i].setEditable(false);
+			qtys[i].setBackground(Color.WHITE);
+			itemPanel.add(qtys[i]);
+
+			JButton btnPlus = new JButton("+");
+			btnPlus.setBounds(405, 10, 30, 30);
+			btnPlus.setMargin(new Insets(0, 0, 0, 0));
+			itemPanel.add(btnPlus);
+
+			final int index = i;
+			btnMinus.addActionListener(e -> {
+				int val = Integer.parseInt(qtys[index].getText());
+				if (val > 0)
+					qtys[index].setText(String.valueOf(val - 1));
+			});
+			btnPlus.addActionListener(e -> {
+				int val = Integer.parseInt(qtys[index].getText());
+				qtys[index].setText(String.valueOf(val + 1));
+			});
+		}
+
+		setupBottomUI();
+		setupRightUI();
+
+		new Timer(1000, e -> lblTime.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))))
+				.start();
+	}
+
+	private void setupBottomUI() {
+		rdIn = new JRadioButton("內用", true);
+		rdIn.setForeground(new Color(0, 0, 128));
+		rdIn.setFont(new Font("隶书", Font.PLAIN, 20));
+		rdIn.setBounds(8, 695, 105, 30);
+		rdOut = new JRadioButton("外帶");
+		rdOut.setForeground(new Color(0, 0, 128));
+		rdOut.setFont(new Font("隶书", Font.PLAIN, 20));
+		rdOut.setBounds(121, 695, 100, 30);
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(rdIn);
+		bg.add(rdOut);
+		contentPane.add(rdIn);
+		contentPane.add(rdOut);
+
+		lblOrderNo = new JLabel("取餐號:1", JLabel.CENTER);
+		lblOrderNo.setForeground(new Color(0, 0, 128));
+		lblOrderNo.setFont(new Font("隶书", Font.PLAIN, 20));
+		lblOrderNo.setBounds(233, 695, 100, 30);
+		lblOrderNo.setBorder(new LineBorder(Color.GRAY));
+		contentPane.add(lblOrderNo);
+
+		lblTime = new JLabel("00:00:00", JLabel.CENTER);
+		lblTime.setForeground(new Color(0, 0, 128));
+		lblTime.setFont(new Font("隶书", Font.PLAIN, 20));
+		lblTime.setBounds(345, 695, 105, 30);
+		contentPane.add(lblTime);
+
+		JButton btnClear = new JButton("清除");
+		btnClear.setForeground(new Color(25, 25, 112));
+		btnClear.setFont(new Font("隶书", Font.PLAIN, 26));
+		btnClear.setBounds(5, 733, 105, 50);
+		
+		JButton btnExit = new JButton("離開");
+		btnExit.setForeground(new Color(25, 25, 112));
+		btnExit.setFont(new Font("隶书", Font.PLAIN, 26));
+		btnExit.setBounds(117, 733, 105, 50);
+		
+		JButton btnPrint = new JButton("列印"); 
+		btnPrint.setForeground(new Color(25, 25, 112));
+		btnPrint.setFont(new Font("隶书", Font.PLAIN, 26));
+		btnPrint.setBounds(230, 733, 105, 50);
+		contentPane.add(btnPrint); 
+		// 加上事件處理器 
+		btnPrint.addMouseListener(new MouseAdapter() { 
+			@Override public void mouseClicked(MouseEvent e) {
+				try { orderDetailsArea.print(); // ← 改我的 JTextArea 名稱 
+				} catch (PrinterException e1) {
+					e1.printStackTrace();
+					} } });
+				
+		
+		JButton btnConfirm = new JButton("確定");
+		btnConfirm.setForeground(new Color(25, 25, 112));
+		btnConfirm.setFont(new Font("隶书", Font.PLAIN, 26));
+		btnConfirm.setBounds(341, 734, 105, 50);
+
+		contentPane.add(btnClear);
+		contentPane.add(btnExit);
+		contentPane.add(btnPrint);
+		contentPane.add(btnConfirm);
+
+		btnConfirm.addActionListener(e -> calc());
+		btnClear.addActionListener(e -> {
+			for (JTextField f : qtys)
+				f.setText("0");
+			orderDetailsArea.setText("");
+		});
+		btnExit.addActionListener(e -> System.exit(0));
+	}
+
+	private void setupRightUI() {
+		JPanel right = new JPanel(new BorderLayout());
+		right.setBounds(450, 0, 168, 810);
+		right.setBorder(new MatteBorder(0, 1, 0, 0, Color.BLACK));
+		contentPane.add(right);
+
+		JLabel h = new JLabel("訂單明細", JLabel.CENTER);
+		h.setForeground(new Color(0, 0, 139));
+		h.setFont(new Font("微軟正黑體", Font.BOLD, 18));
+		right.add(h, BorderLayout.NORTH);
+
+		orderDetailsArea = new JTextArea();
+		orderDetailsArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
+		orderDetailsArea.setEditable(false);
+		right.add(new JScrollPane(orderDetailsArea), BorderLayout.CENTER);
+	}
+
+	private void calc() {
+		String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")); 
+		StringBuilder sb = new StringBuilder("== Java Cafe ==\n"); 
+		sb.append("單號: ").append(orderCounter).append("\n"); 
+		sb.append("訂單時間:\n ").append(now).append("\n\n"); // ← 新增 
+		
+		int sub = 0;
+		for (int i = 0; i < 8; i++) {
+			int q = Integer.parseInt(qtys[i].getText());
+			if (q > 0) {
+				if (i < 4 && tempGroups[i] != null) {
+					String temp = tempGroups[i].getSelection().getActionCommand();
+					sb.append(names[i]).append("（").append(temp).append("）").append("\n").append(q).append(" x $")
+							.append(prices[i]).append("\n");
+				} else {
+					sb.append(names[i]).append("\n  ").append(q).append("x$").append(prices[i]).append("\n");
+				}
+				sub += q * prices[i];
+			}
+		}
+		
+
+		int svc = rdIn.isSelected() ? (int) (sub * 0.1) : 0;
+		sb.append("\n----------------\n小計(稅內): $").append(sub);
+		if (svc > 0) {
+			sb.append("\n服務費10%: $").append(svc);
+		}
+		sb.append("\n總計: $").append(sub + svc);
+
+		orderDetailsArea.setText(sb.toString());
+		orderCounter++;
+		lblOrderNo.setText("取餐號:" + orderCounter);
+	}
+}

@@ -1,0 +1,402 @@
+=======================OrderApplication.java=======================
+package com.order.app;
+
+import javax.swing.SwingUtilities;
+import com.order.view.OrderView;
+import com.order.controller.OrderController;
+
+public class OrderApplication {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            OrderView view = new OrderView();
+            new OrderController(view);
+            view.setVisible(true);
+        });
+    }
+}
+
+
+
+=======================OrderController.java=======================
+package com.order.controller;
+
+import com.order.model.ItemDO;
+import com.order.view.OrderView;
+
+
+import javax.swing.Timer;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+
+import java.awt.Font;
+//import java.awt.Dimension;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Map;
+
+public class OrderController {
+
+    private OrderView view;
+    private ArrayList<ItemDO> cart = new ArrayList<>();
+
+    private Map<String, Integer> priceMap = Map.of(
+            "牛肉堡", 120,
+            "炸雞排", 85,
+            "冰可樂", 30,
+            "大薯條", 55,
+            "玉米濃湯", 45
+    );
+
+    private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private DateTimeFormatter fileDtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+
+    public OrderController(OrderView view) {
+        this.view = view;
+        initListeners();
+        startTimeTicker();
+    }
+
+    private void startTimeTicker() {
+        Timer timer = new Timer(1000, e ->
+                view.lblDateTime.setText("系統時間: " + LocalDateTime.now().format(dtf))
+        );
+        timer.start();
+    }
+
+    private void initListeners() {
+        for (String name : priceMap.keySet()) {
+            view.addBtns.get(name).addActionListener(e -> updateCart(name, priceMap.get(name), 1));
+            view.subBtns.get(name).addActionListener(e -> updateCart(name, priceMap.get(name), -1));
+        }
+
+        view.rbMember.addActionListener(e -> refreshTable());
+        view.rbNormal.addActionListener(e -> refreshTable());
+
+        view.btnCheckout.addActionListener(e -> {
+            if (cart.isEmpty()) {
+                JOptionPane.showMessageDialog(view, "購物車是空的喔！");
+                return;
+            }
+            JOptionPane.showMessageDialog(view, "結帳金額為：$" + calculateTotal());
+        });
+
+        view.btnClear.addActionListener(e -> {
+            cart.clear();
+            view.qtyLabels.values().forEach(l -> l.setText("0"));
+            refreshTable();
+        });
+
+        view.btnPrint.addActionListener(e -> {
+            if (cart.isEmpty()) {
+                JOptionPane.showMessageDialog(view, "沒有點餐內容，無法預覽。");
+                return;
+            }
+            showReceiptPreview();
+        });
+
+        view.btnClose.addActionListener(e -> System.exit(0));
+    }
+
+    private void showReceiptPreview() {
+        String content = generateReceiptText();
+        JTextArea area = new JTextArea(content);
+        area.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        area.setEditable(false);
+
+        Object[] options = {"存檔並結帳", "列印", "取消"};
+        int opt = JOptionPane.showOptionDialog(
+                view,
+                new JScrollPane(area),
+                "收據預覽",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (opt == 0 || opt == 1) {
+            saveReceiptToFile(content);
+            updateSalesLog(); //  CSV 正確寫入
+        }
+
+        if (opt == 1) executePhysicalPrint(area);
+    }
+
+    private void executePhysicalPrint(JTextArea area) {
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(area.getPrintable(null, null));
+        if (job.printDialog()) {
+            try {
+                job.print();
+            } catch (PrinterException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String generateReceiptText() {
+        StringBuilder sb = new StringBuilder();
+        int subtotal = cart.stream().mapToInt(ItemDO::getSubTotal).sum();// 使用該變數
+        int total = calculateTotal();
+
+        sb.append("================================\n");
+        sb.append("        麥肯雞 點餐結帳平台         \n");
+        sb.append("================================\n");
+        sb.append("時間: ").append(LocalDateTime.now().format(dtf)).append("\n");
+        sb.append("身分: ").append(view.rbMember.isSelected() ? "會員" : "一般").append("\n");
+        sb.append("--------------------------------\n");
+
+        for (ItemDO i : cart) {
+            sb.append(String.format("%s x%d $%d\n",
+                    i.getName(), i.getQuantity(), i.getSubTotal()));
+        }
+
+        sb.append("--------------------------------\n");
+        sb.append("小計 (原價): $").append(subtotal).append("\n"); // 使用該變數
+        sb.append("總金額: $").append(total).append("\n");
+        return sb.toString();
+    }
+
+    private void saveReceiptToFile(String content) {
+        try (Writer w = new OutputStreamWriter(
+                new FileOutputStream("Receipt_" + LocalDateTime.now().format(fileDtf) + ".txt"),
+                StandardCharsets.UTF_8)) {
+            w.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // （Excel 不亂碼）
+    private void updateSalesLog() {
+        File file = new File("sales_log.csv");
+        boolean isNew = !file.exists();
+
+        try (OutputStreamWriter writer =
+                     new OutputStreamWriter(
+                             new FileOutputStream(file, true),
+                             StandardCharsets.UTF_8)) {
+
+            if (isNew) {
+                writer.write("\uFEFF"); // BOM
+                writer.write("交易時間,客戶身分,總金額\n");
+            }
+
+            writer.write(String.format("%s,%s,%d\n",
+                    LocalDateTime.now().format(dtf),
+                    view.rbMember.isSelected() ? "會員" : "一般",
+                    calculateTotal()));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateCart(String name, int price, int change) {
+        ItemDO item = cart.stream()
+                .filter(i -> i.getName().equals(name))
+                .findFirst()
+                .orElse(null);
+
+        if (item == null && change > 0) {
+            item = new ItemDO(name, price, 0);
+            cart.add(item);
+        }
+
+        if (item != null) {
+            int q = item.getQuantity() + change;
+            if (q <= 0) {
+                cart.remove(item);
+                view.qtyLabels.get(name).setText("0");
+            } else {
+                item.setQuantity(q);
+                view.qtyLabels.get(name).setText(String.valueOf(q));
+            }
+        }
+        refreshTable();
+    }
+
+    private int calculateTotal() {
+        int sum = cart.stream().mapToInt(ItemDO::getSubTotal).sum();
+        return view.rbMember.isSelected() ? (int) (sum * 0.9) : sum;
+    }
+
+    private void refreshTable() {
+        view.tableModel.setRowCount(0);
+        for (ItemDO i : cart) {
+            view.tableModel.addRow(new Object[]{
+                    i.getName(), i.getPrice(), i.getQuantity(), i.getSubTotal()
+            });
+        }
+        view.lblTotal.setText("總金額: $" + calculateTotal());
+    }
+}
+
+
+
+
+
+
+=======================itemDO.java=======================
+package com.order.model;
+
+public class ItemDO {
+    private String name;
+    private int price;
+    private int quantity;
+
+    public ItemDO(String name, int price, int quantity) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public String getName() { return name; }
+    public int getPrice() { return price; }
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+
+    public int getSubTotal() {
+        return this.price * this.quantity;
+    }
+}
+
+
+=======================OrderView.java=======================
+package com.order.view;
+
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JTable;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
+import javax.swing.JScrollPane;
+import javax.swing.BorderFactory;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Dimension;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class OrderView extends JFrame {
+    
+    private static final long serialVersionUID = 1L;
+    
+    public DefaultTableModel tableModel = new DefaultTableModel(new String[]{"餐點", "單價", "數量", "小計"}, 0);
+    public JTable table = new JTable(tableModel);
+    
+    public Map<String, JLabel> qtyLabels = new HashMap<>();
+    public Map<String, JButton> addBtns = new HashMap<>();
+    public Map<String, JButton> subBtns = new HashMap<>();
+
+    public JButton btnCheckout = new JButton("結帳");
+    public JButton btnClear = new JButton("全部清除");
+    public JButton btnPrint = new JButton("預覽收據");
+    public JButton btnClose = new JButton("關閉系統");
+    public JLabel lblTotal = new JLabel("總金額: $0");
+    public JLabel lblDateTime = new JLabel("系統時間載入中...");
+
+    public JRadioButton rbMember = new JRadioButton("會員 (9折)");
+    public JRadioButton rbNormal = new JRadioButton("非會員", true);
+    public ButtonGroup groupIdentity = new ButtonGroup();
+
+    public OrderView() {
+        setTitle("麥肯雞 點餐結帳平台");
+        setSize(550, 750);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout(10, 10));
+
+        JPanel pnlHeader = new JPanel(new BorderLayout());
+        JPanel pnlIdentity = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        groupIdentity.add(rbNormal);
+        groupIdentity.add(rbMember);
+        pnlIdentity.add(new JLabel(" 身份:"));
+        pnlIdentity.add(rbNormal);
+        pnlIdentity.add(rbMember);
+        
+        lblDateTime.setFont(new Font("Monospaced", Font.BOLD, 14));
+        lblDateTime.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        pnlHeader.add(pnlIdentity, BorderLayout.WEST);
+        pnlHeader.add(lblDateTime, BorderLayout.EAST);
+        add(pnlHeader, BorderLayout.NORTH);
+
+        JPanel pnlMenu = new JPanel();
+        pnlMenu.setLayout(new GridLayout(0, 1, 5, 5));
+        pnlMenu.setBorder(BorderFactory.createTitledBorder("美味菜單"));
+
+        String[][] menuItems = {{"牛肉堡", "120"}, {"炸雞排", "85"}, {"冰可樂", "30"}, {"大薯條", "55"}, {"玉米濃湯", "45"}};
+        for (String[] data : menuItems) {
+            pnlMenu.add(createRow(data[0], data[1]));
+        }
+
+        JPanel pnlCenter = new JPanel(new BorderLayout());
+        pnlCenter.add(new JScrollPane(pnlMenu), BorderLayout.NORTH);
+        pnlCenter.add(new JScrollPane(table), BorderLayout.CENTER);
+        add(pnlCenter, BorderLayout.CENTER);
+
+        JPanel pnlSouth = new JPanel(new BorderLayout());
+        lblTotal.setFont(new Font("微軟正黑體", Font.BOLD, 22));
+        lblTotal.setForeground(Color.RED);
+        lblTotal.setHorizontalAlignment(SwingConstants.RIGHT);
+        
+        JPanel pnlBtns = new JPanel();
+        pnlBtns.add(btnCheckout); pnlBtns.add(btnClear);
+        pnlBtns.add(btnPrint);    pnlBtns.add(btnClose);
+        
+        pnlSouth.add(lblTotal, BorderLayout.NORTH);
+        pnlSouth.add(pnlBtns, BorderLayout.SOUTH);
+        add(pnlSouth, BorderLayout.SOUTH);
+        
+        setLocationRelativeTo(null); 
+    }
+
+    private JPanel createRow(String name, String price) {
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel nameLbl = new JLabel(name + " ($" + price + ")");
+        nameLbl.setPreferredSize(new Dimension(180, 25));
+
+        JButton btnSub = new JButton("-");
+        JLabel qty = new JLabel("0");
+        qty.setPreferredSize(new Dimension(30, 25));
+        qty.setHorizontalAlignment(SwingConstants.CENTER);
+        JButton btnAdd = new JButton("+");
+
+        subBtns.put(name, btnSub);
+        addBtns.put(name, btnAdd);
+        qtyLabels.put(name, qty);
+
+        row.add(nameLbl);
+        row.add(btnSub);
+        row.add(qty);
+        row.add(btnAdd);
+        return row;
+    }
+}
+
+

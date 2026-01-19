@@ -1,0 +1,799 @@
+package com;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import java.awt.Color;
+import javax.swing.SwingConstants;
+import java.awt.SystemColor;
+import javax.swing.Timer;
+
+import javax.swing.UIManager;
+import javax.swing.JTextField;
+import javax.swing.JCheckBox;
+import javax.swing.JButton;
+import javax.swing.DropMode;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.print.PrinterException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
+import javax.swing.JTextArea;
+
+public class MainUI extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField normalZone;
+	private JTextField rareZone;
+
+	private boolean gameIsStart = false;
+	private int chance =0;
+	private int gameLevel=0;
+	private boolean firstSelect = false;
+	private int winCounter;
+	private int rewardGain;
+	
+
+	
+	
+	/*restart zone*/
+	private JLabel lastChance;
+	private JLabel dialogMaster;
+	private JButton[] jb;
+	private JLabel winCount;
+	private JLabel rewardTotal;
+	private JButton surrenderButton;
+	private JButton startButton;
+	private DoorController[] dr;
+	
+	static String name;
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args)
+	{
+		String userName = JOptionPane.showInputDialog(null, "請輸入您的名字：", "尊敬的盤子", JOptionPane.QUESTION_MESSAGE);
+
+	    if (userName == null || userName.trim().isEmpty()) {
+	        userName = "沒名字的孤兒"; // 給予預設值
+	    }
+	    
+	    name = userName;
+	    
+
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					
+					MainUI frame = new MainUI();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		
+		
+
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public MainUI() {
+
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 799, 636);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(0, 0, 194, 587);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
+		JLabel gold = new JLabel("剩餘金錢:");
+		gold.setBounds(9, 78, 60, 20);
+		panel.add(gold);
+		
+		JLabel lblNewLabel_1 = new JLabel("持有票券");
+		lblNewLabel_1.setForeground(new Color(0, 0, 0));
+		lblNewLabel_1.setOpaque(true);
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setBackground(SystemColor.activeCaption);
+		lblNewLabel_1.setFont(new Font("新細明體", Font.PLAIN, 16));
+		lblNewLabel_1.setBounds(0, 126, 194, 25);
+		panel.add(lblNewLabel_1);
+		
+		JLabel normalTrickets = new JLabel("普通票券:");
+		normalTrickets.setBackground(new Color(240, 240, 240));
+		normalTrickets.setBounds(10, 165, 60, 15);
+		panel.add(normalTrickets);
+		
+		JLabel rareTrickets = new JLabel("高級票券:");
+		rareTrickets.setBounds(10, 190, 60, 15);
+		panel.add(rareTrickets);
+		
+		JLabel lblNewLabel_1_1 = new JLabel("購買");
+		lblNewLabel_1_1.setOpaque(true);
+		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1_1.setForeground(Color.BLACK);
+		lblNewLabel_1_1.setFont(new Font("新細明體", Font.PLAIN, 16));
+		lblNewLabel_1_1.setBackground(SystemColor.activeCaption);
+		lblNewLabel_1_1.setBounds(0, 215, 194, 25);
+		panel.add(lblNewLabel_1_1);
+		
+		JLabel normal = new JLabel("普通(300G)");
+		normal.setToolTipText("失敗一次就結束");
+		normal.setBackground(UIManager.getColor("Button.background"));
+		normal.setBounds(10, 261, 68, 15);
+		panel.add(normal);
+		
+		JLabel rare = new JLabel("高級(500G)");
+		rare.setToolTipText("失敗兩次才結束");
+		rare.setBackground(UIManager.getColor("Button.background"));
+		rare.setBounds(10, 289, 68, 15);
+		panel.add(rare);
+		
+		normalZone = new JTextField();
+		normalZone.setHorizontalAlignment(SwingConstants.RIGHT);
+		normalZone.setBounds(88, 258, 96, 21);
+		panel.add(normalZone);
+		normalZone.setColumns(10);
+		
+		rareZone = new JTextField();
+		rareZone.setHorizontalAlignment(SwingConstants.RIGHT);
+		rareZone.setColumns(10);
+		rareZone.setBounds(88, 286, 96, 21);
+		panel.add(rareZone);
+		
+		JLabel normalT = new JLabel("1");
+		normalT.setBackground(UIManager.getColor("Button.background"));
+		normalT.setBounds(80, 165, 60, 15);
+		panel.add(normalT);
+		
+		JLabel rareT = new JLabel("1");
+		rareT.setBackground(UIManager.getColor("Button.background"));
+		rareT.setBounds(80, 190, 60, 15);
+		panel.add(rareT);
+		
+		JLabel member = new JLabel("我背景很硬得打折");
+		member.setBackground(UIManager.getColor("Button.background"));
+		member.setBounds(10, 322, 96, 20);
+		panel.add(member);
+		
+		JCheckBox memberCheck = new JCheckBox("");
+		memberCheck.setBounds(112, 319, 76, 23);
+		panel.add(memberCheck);
+		
+		JLabel lastGold = new JLabel("9999");
+		lastGold.setBackground(UIManager.getColor("Button.background"));
+		lastGold.setBounds(79, 81, 60, 15);
+		panel.add(lastGold);
+		
+
+		
+		JLabel lblNewLabel_1_2 = new JLabel("帳戶狀態");
+		lblNewLabel_1_2.setOpaque(true);
+		lblNewLabel_1_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1_2.setForeground(Color.BLACK);
+		lblNewLabel_1_2.setFont(new Font("新細明體", Font.PLAIN, 16));
+		lblNewLabel_1_2.setBackground(SystemColor.activeCaption);
+		lblNewLabel_1_2.setBounds(0, 0, 194, 25);
+		panel.add(lblNewLabel_1_2);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(192, 192, 192));
+		panel_1.setBounds(194, 0, 357, 587);
+		contentPane.add(panel_1);
+		panel_1.setLayout(null);
+		
+
+		
+
+		
+		
+		JLabel lastChance = new JLabel("剩餘機會: X");
+		lastChance.setHorizontalAlignment(SwingConstants.CENTER);
+		lastChance.setBounds(81, 111, 202, 20);
+		panel_1.add(lastChance);
+		this.lastChance = lastChance;
+		
+		
+		JButton doorButton1 = new JButton("一號門");
+		doorButton1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		doorButton1.setBounds(26, 178, 87, 172);
+		panel_1.add(doorButton1);
+		
+		JButton doorButton2 = new JButton("二號門");
+		doorButton2.setBounds(138, 178, 87, 172);
+		panel_1.add(doorButton2);
+		
+		JButton doorButton3 = new JButton("三號門");
+		doorButton3.setBounds(247, 178, 87, 172);
+		panel_1.add(doorButton3);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBounds(550, 0, 233, 587);
+		contentPane.add(panel_2);
+		panel_2.setLayout(null);
+		
+		JTextArea gameReward = new JTextArea();
+		gameReward.setBounds(31, 21, 174, 375);
+		panel_2.add(gameReward);
+		
+		JButton printButton = new JButton("列印");
+		printButton.setBounds(74, 457, 87, 23);
+		panel_2.add(printButton);
+		
+		JButton closeButton = new JButton("關閉");
+		closeButton.setBounds(74, 493, 87, 23);
+		panel_2.add(closeButton);
+		
+		JLabel account = new JLabel("尊敬的");
+		account.setBounds(8, 44, 60, 20);
+		panel.add(account);
+		
+		JButton surrenderButton = new JButton("放棄");
+		surrenderButton.setBounds(220, 34, 87, 23);
+		panel_1.add(surrenderButton);
+		this.surrenderButton = surrenderButton;
+		
+		JLabel dialogMaster = new JLabel("主持人說");
+		dialogMaster.setHorizontalAlignment(SwingConstants.CENTER);
+		dialogMaster.setBounds(81, 141, 202, 20);
+		panel_1.add(dialogMaster);
+		this.dialogMaster = dialogMaster;
+		
+		JLabel winCount = new JLabel("累計勝場:");
+		winCount.setBounds(67, 426, 132, 15);
+		panel_1.add(winCount);
+		this.winCount = winCount;
+		
+		JLabel rewardTotal = new JLabel("累計獎金:");
+		rewardTotal.setBounds(67, 491, 132, 15);
+		panel_1.add(rewardTotal);
+		this.rewardTotal = rewardTotal;
+		
+		Standard sd =new Standard(name,1000,0,0);
+		lastGold.setText(String.valueOf(sd.getGold()));
+		normalT.setText(String.valueOf(sd.getNormalTriket()));
+		rareT.setText(String.valueOf(sd.getRareTriket()));
+
+		if (gameIsStart== false)
+		{
+			surrenderButton.setVisible(false);
+			doorButton1.setVisible(false);
+			doorButton2.setVisible(false);
+			doorButton3.setVisible(false);
+			lastChance.setVisible(false);
+			dialogMaster.setVisible(false);
+			lastChance.setVisible(false);
+			winCount.setVisible(false);
+			rewardTotal.setVisible(false);
+		}
+		
+		
+		
+		/******************************Event************************************/
+		
+		/*surrender Event*/
+		
+
+		
+		surrenderButton.addActionListener(e -> 
+		{
+			reSetGame();
+		});
+
+		/*Buy Event*/
+		JButton buyButton = new JButton("購買");
+		buyButton.setBounds(53, 364, 87, 23);
+		panel.add(buyButton);
+		
+		buyButton.addActionListener(e -> {
+	    	String normalString = normalZone.getText();
+	    	String rareString = rareZone.getText();
+	    	int finalCost;
+	        float totalCost;
+		    try {
+
+		        int normalGet = Integer.parseInt(normalZone.getText().trim());
+		        int rareGet = Integer.parseInt(rareZone.getText().trim());
+		        totalCost = (normalGet * 300) + (rareGet * 500);
+				boolean mcheck = memberCheck.isSelected();
+		        if(mcheck == true)
+		        {
+		        	totalCost =totalCost* 0.9f;
+
+		        }
+		        
+		        finalCost = (int)totalCost;
+		        System.out.println(finalCost);
+		        
+		        int sdGold = sd.getGold();
+		        if(finalCost>sdGold)
+		        {
+		        	 JOptionPane.showMessageDialog(null,"你沒錢啦bro", "自己看看還剩多少", JOptionPane.ERROR_MESSAGE);
+		        }
+		        else if (normalGet<0 || rareGet<0)
+		        {
+		        	 JOptionPane.showMessageDialog(null,"輸點正常的數字OK?", "自己看看還剩多少", JOptionPane.ERROR_MESSAGE);
+		        }
+		        else
+		        {
+		        	int result = JOptionPane.showConfirmDialog(
+		        	        null, 
+		        	        "您確定要花費 " + finalCost + " 金錢購買嗎？", 
+		        	        "買就對了盤子", 
+		        	        JOptionPane.YES_NO_OPTION
+		        	    );
+		        	if(result == JOptionPane.YES_OPTION)
+		        	{
+		        		sd.setGold(sdGold -finalCost);
+			        	int normalCurrent = sd.getNormalTriket();
+			        	int rareCurrent = sd.getRareTriket();
+			        	sd.setNormalTriket(normalCurrent + normalGet);
+			           	sd.setRareTriket(rareCurrent + rareGet);
+			        	normalT.setText(String.valueOf(sd.getNormalTriket()));
+			        	rareT.setText(String.valueOf(sd.getRareTriket()));
+			        	lastGold.setText(String.valueOf(sd.getGold()));
+		        	}
+		        	
+		        	
+		        	
+		        }
+		        
+
+		        
+		    } catch (NumberFormatException ex) {
+		        JOptionPane.showMessageDialog(null, "拜託你輸入正整數好嗎O.o....", "輸"+normalString + "和"+rareString+"這是有甚麼問題?", JOptionPane.ERROR_MESSAGE);
+		    }
+		});
+		
+		/*Name Event*/
+		JLabel account_2 = new JLabel("sir");
+		account_2.setBounds(53, 35, 160, 40);
+		panel.add(account_2);
+		account_2.setText(sd.getName());
+		
+		/*Reset event*/
+		JButton resetButton = new JButton("重設");
+		resetButton.setBounds(53, 397, 87, 23);
+		panel.add(resetButton);
+		
+		
+
+		
+		resetButton.addActionListener(e -> 
+		{
+		    normalZone.setText("0");
+		    rareZone.setText("0");
+		    memberCheck.setSelected(false);
+		    //textArea.setText("");
+		});
+		
+		/*Time event*/
+		JLabel timeZone = new JLabel("目前時間:yyyy-MM-dd HH:mm:ss");
+		timeZone.setBounds(8, 79, 184, 64);
+		panel.add(timeZone);
+		
+		Timer timer = new Timer(1000, new ActionListener() 
+		{
+		    public void actionPerformed(ActionEvent e) 
+		    {
+		        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		        timeZone.setText("目前時間：" +"\n"+time);
+		    }
+		});
+		timer.start();
+		
+		
+		/*Reward Button Event*/
+
+		
+		JButton rewardButton = new JButton("匯出獎金");
+		rewardButton.setBounds(231, 487, 87, 23);
+		panel_1.add(rewardButton);
+		rewardButton.addActionListener(e -> 
+		{
+			int finalReward = rewardGain * winCounter;
+			gameReward.setText("累計勝場: " + winCounter +"\n累計獎金: " + finalReward + "\n匯出時間：" +timeZone.getText() + "\n姓名: " + name);
+			
+			winCounter = 0;
+		    winCount.setText("累計勝場: " +winCounter);
+		    rewardGain = 0;
+		    rewardTotal.setText("累計獎金: " +rewardGain);
+		    
+		    
+		    
+
+		});
+		
+		/*GameStart Event*/
+		
+
+		
+		JButton startButton = new JButton("開始");
+		startButton.setBounds(57, 34, 87, 23);
+		panel_1.add(startButton);
+		this.startButton = startButton;
+		
+
+		
+
+		
+
+
+		startButton.addActionListener(e -> {
+		if(gameIsStart)
+		{
+			JOptionPane.showMessageDialog(null, "遊戲已經開始請不要重複點擊", "", JOptionPane.ERROR_MESSAGE);
+		}
+		String[] tricketText = {"普通票券","高級票券"};
+		
+		int selections = JOptionPane.showOptionDialog(
+				null,
+				"請選擇使用的票券:",
+				"身分等級",
+				JOptionPane.DEFAULT_OPTION,
+				JOptionPane.INFORMATION_MESSAGE,
+				null,
+				tricketText,
+				tricketText[0]		
+				);
+		
+		if (selections == 0)
+		{
+			if(sd.getNormalTriket()<1)
+			{
+				JOptionPane.showMessageDialog(null, "請先買票好嗎，乞丐", "", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			gameIsStart = true;
+			sd.setNormalTriket(sd.getNormalTriket() - 1);
+			normalT.setText(String.valueOf(sd.getNormalTriket()));
+			gameLevel = 1;
+
+
+			
+			if (gameIsStart)
+			{
+				startButton.setVisible(false);
+				surrenderButton.setVisible(true);
+				doorButton1.setVisible(true);
+				doorButton2.setVisible(true);
+				doorButton3.setVisible(true);
+				lastChance.setVisible(true);
+				chance = 0;
+				lastChance.setText("剩餘機會: " + String.valueOf(chance));
+				dialogMaster.setVisible(true);
+				dialogMaster.setText("請選擇一扇門");
+				
+				jb = new JButton[3];
+				jb[0] = doorButton1;
+				jb[1] = doorButton2;
+				jb[2] = doorButton3;
+				
+
+			}
+			startInGame();
+		}
+		else if(selections ==1)
+		{
+			if(sd.getRareTriket()<1)
+			{
+				JOptionPane.showMessageDialog(null, "請先買票好嗎，乞丐", "", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			gameIsStart = true;
+			sd.setRareTriket(sd.getRareTriket() - 1);
+			rareT.setText(String.valueOf(sd.getRareTriket()));
+			gameLevel = 2;
+			if (gameIsStart)
+			{
+				startButton.setVisible(false);
+				surrenderButton.setVisible(true);
+				doorButton1.setVisible(true);
+				doorButton2.setVisible(true);
+				doorButton3.setVisible(true);
+				lastChance.setVisible(true);
+				chance = 1;
+				lastChance.setText("剩餘機會: " + String.valueOf(chance));
+				dialogMaster.setVisible(true);
+				dialogMaster.setText("請選擇一扇門");
+				
+				jb = new JButton[3];
+				jb[0] = doorButton1;
+				jb[1] = doorButton2;
+				jb[2] = doorButton3;
+
+			}
+			startInGame();
+		}
+		
+		});
+		
+		/*Print Button Event*/
+		printButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					gameReward.print();
+				} catch (PrinterException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+
+		/* Close Button Event*/
+		closeButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				 System.exit(0);
+			}
+		});
+		
+		/*Door Button Event*/
+		doorButton1.addActionListener(e -> 
+		{
+			int result = JOptionPane.showConfirmDialog(
+        	        null, 
+        	        "您確定要選擇 " + doorButton1.getText() + " 嗎？", 
+        	        "機會/命運請選擇", 
+        	        JOptionPane.YES_NO_OPTION
+        	    );
+        	if(result == JOptionPane.YES_OPTION)
+        	{
+        		System.out.println("Yes1");
+        		if(firstSelect == false)
+        		{
+        			firstSelect = true;
+        			dr[0].setFirstSel(true);
+        			dr[1].setFirstSel(false);
+        			dr[2].setFirstSel(false);
+        			doorClose();
+        			dialogMaster.setText("是否要更換選項?");
+        		}
+        		else if (firstSelect == true)
+        		{
+        			if(dr[0].getRightDoor()== true)
+        			{
+        				dialogMaster.setText("恭喜答對了");
+        				doorButton1.setText("正確答案!");
+        				JOptionPane.showMessageDialog(null, "正確答案!", "", JOptionPane.ERROR_MESSAGE);
+        				closeOpenJb(false);
+        				//startButton.setVisible(true);
+        				winCounter ++;
+        				rewardGain = 100 * winCounter;
+        				reStartGame();
+
+        			}
+        			else if (chance > 0)
+        			{
+        				chance -= 1;
+        				lastChance.setText("剩餘機會: " + chance);
+        				JOptionPane.showMessageDialog(null, "機會-1!", "", JOptionPane.ERROR_MESSAGE);
+        				reStartGame();
+        			}
+        			else
+        			{
+        				dialogMaster.setText("恭喜您大錯特錯");
+        				doorButton1.setText("再去買票吧!盤子");
+        				JOptionPane.showMessageDialog(null, "答錯啦!", "", JOptionPane.ERROR_MESSAGE);
+        				reSetGame();
+        			}
+        		}
+        	}
+		});
+		doorButton2.addActionListener(e -> 
+		{
+			int result = JOptionPane.showConfirmDialog(
+        	        null, 
+        	        "您確定要選擇 " + doorButton2.getText() + " 嗎？", 
+        	        "機會/命運請選擇", 
+        	        JOptionPane.YES_NO_OPTION
+        	    );
+			
+        	if(result == JOptionPane.YES_OPTION)
+        	{
+        		System.out.println("Yes2");
+        		if(firstSelect == false)
+        		{
+        			firstSelect = true;
+        			dr[1].setFirstSel(true);
+        			dr[0].setFirstSel(false);
+        			dr[2].setFirstSel(false);
+        			doorClose();
+        			dialogMaster.setText("是否要更換選項?");
+        		}
+        		else if (firstSelect == true)
+        		{
+        			if(dr[1].getRightDoor()== true)
+        			{
+        				dialogMaster.setText("恭喜答對了");
+        				doorButton2.setText("正確答案!");
+        				JOptionPane.showMessageDialog(null, "正確答案!", "", JOptionPane.ERROR_MESSAGE);
+        				closeOpenJb(false);
+        				//startButton.setVisible(true);
+        				winCounter ++;
+        				rewardGain = 100 * winCounter;
+        				reStartGame();
+        			}
+        			else if (chance > 0)
+        			{
+        				chance -= 1;
+        				lastChance.setText("剩餘機會: " + chance);
+        				JOptionPane.showMessageDialog(null, "機會-1!", "", JOptionPane.ERROR_MESSAGE);
+        				reStartGame();
+        			}
+        			else
+        			{
+        				dialogMaster.setText("恭喜您大錯特錯");
+        				doorButton2.setText("再去買票吧!盤子");
+        				JOptionPane.showMessageDialog(null, "答錯啦!", "", JOptionPane.ERROR_MESSAGE);
+        				reSetGame();
+        			}
+        		}
+        	}
+		});
+		doorButton3.addActionListener(e -> 
+		{
+			int result = JOptionPane.showConfirmDialog(
+        	        null, 
+        	        "您確定要選擇 " + doorButton3.getText() + " 嗎？", 
+        	        "機會/命運請選擇", 
+        	        JOptionPane.YES_NO_OPTION
+        	    );
+		  	if(result == JOptionPane.YES_OPTION)
+        	{
+        		System.out.println("Yes3");
+        		if(firstSelect == false)
+        		{
+        			firstSelect = true;
+        			dr[1].setFirstSel(true);
+        			dr[0].setFirstSel(false);
+        			dr[2].setFirstSel(false);
+        			doorClose();
+        			dialogMaster.setText("是否要更換選項?");
+        		}
+        		else if (firstSelect == true)
+        		{
+        			if(dr[2].getRightDoor()== true )
+        			{
+        				dialogMaster.setText("恭喜答對了");
+        				doorButton3.setText("正確答案!");
+        				JOptionPane.showMessageDialog(null, "正確答案!", "", JOptionPane.ERROR_MESSAGE);
+        				closeOpenJb(false);
+        				//startButton.setVisible(true);
+        				winCounter ++;
+        				rewardGain = 100 * winCounter;
+        				
+        				reStartGame();
+        			}
+        			else if (chance > 0)
+        			{
+        				chance -= 1;
+        				lastChance.setText("剩餘機會: " + chance);
+        				JOptionPane.showMessageDialog(null, "機會-1!", "", JOptionPane.ERROR_MESSAGE);
+        				reStartGame();
+        			}
+        			else
+        			{
+        				dialogMaster.setText("恭喜您大錯特錯");
+        				doorButton2.setText("再去買票吧!盤子");
+        				JOptionPane.showMessageDialog(null, "答錯啦!", "", JOptionPane.ERROR_MESSAGE);
+        				reSetGame();
+        			}
+        		}
+        	}
+		});
+
+	}
+	public void startInGame()
+	{
+		firstSelect = false;
+		dr = new DoorController[3];
+		for (int i = 0; i < dr.length; i++) 
+		{
+	        dr[i] = new DoorController(); 
+	    }
+		int ranNum = (int)(Math.random() * 3);
+		System.out.println(ranNum);
+		dr[ranNum].setRightDoor(true);
+		
+		System.out.println(dr[0].isRightDoor());
+		System.out.println(dr[1].isRightDoor());
+		System.out.println(dr[2].isRightDoor());
+		lastChance.setVisible(true);
+		dialogMaster.setVisible(true);
+		winCount.setVisible(true);
+		rewardTotal.setVisible(true);
+		jb[0].setText("一號門");
+		jb[1].setText("二號門");
+		jb[2].setText("三號門");
+	}
+	
+	public void doorClose() 
+	{
+		for(int i =0 ; i< dr.length;i++)
+		{
+			boolean o = dr[i].getRightDoor();
+			boolean f = dr[i].isFirstSel();
+			if(o == false && f == false)
+			{
+	            jb[i].setVisible(false); 
+	            return;
+			}
+		}
+	}
+	
+	public void reStartGame()
+	{
+		firstSelect = false;
+		lastChance.setText("剩餘機會: "+ chance );
+		dialogMaster.setText("請選擇一扇門");
+		winCount.setText("累計勝場:" + winCounter);
+		int rewardFinal = rewardGain * winCounter;
+		rewardTotal.setText("累計獎金: " + rewardFinal);
+		startInGame();
+		closeOpenJb(true);
+		
+		
+	}
+	
+	public void closeOpenJb(boolean b)
+	{
+		for(int i =0 ; i< jb.length ; i++)
+		{
+			jb[i].setVisible(b);
+		}
+	}
+	
+	public void reSetGame()
+	{
+		chance = 0;
+		winCounter = 0;
+		rewardGain = 0;
+		lastChance.setText("剩餘機會: "+ chance );
+		dialogMaster.setText("請選擇一扇門");
+		winCount.setText("累計勝場:" + winCounter);
+		closeOpenJb(false);
+		lastChance.setVisible(false);
+		dialogMaster.setVisible(false);
+		winCount.setVisible(false);
+		rewardTotal.setVisible(false);
+		gameIsStart = false;
+		firstSelect = false;
+		startButton.setVisible(true);
+		surrenderButton.setVisible(false);
+		
+		jb[0].setText("一號門");
+		jb[1].setText("二號門");
+		jb[2].setText("三號門");
+		
+	}
+	
+	
+
+}

@@ -1,0 +1,54 @@
+package com;
+
+public class Travel {
+	String name;
+	int bail;
+	int thailand;
+	int malaysia;
+	boolean member;
+	double sum;
+	
+	public Travel(String name, int bail, int thailand, int malaysia, boolean member) {
+		super();
+		this.name = name;
+		this.bail = bail;
+		this.thailand = thailand;
+		this.malaysia = malaysia;
+		this.member = member;
+		sum=bail*19999+thailand*15444+malaysia*26666;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getBail() {
+		return bail;
+	}
+	public void setBail(int bail) {
+		this.bail = bail;
+	}
+	public int getThailand() {
+		return thailand;
+	}
+	public void setThailand(int thailand) {
+		this.thailand = thailand;
+	}
+	public int getMalaysia() {
+		return malaysia;
+	}
+	public void setMalaysia(int malaysia) {
+		this.malaysia = malaysia;
+	}
+	public boolean isMember() {
+		return member;
+	}
+	public void setMember(boolean member) {
+		this.member = member;
+	}
+	public double getSum() {
+		return sum;
+	}
+	
+}

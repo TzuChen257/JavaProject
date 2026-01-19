@@ -1,0 +1,405 @@
+
+package com;
+
+/* skip import */
+public class OrderFrameA extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textfieldPenAmount;
+	private JTextField textfieldRulerAmount;
+	private OrderInterfaceA orderA;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					OrderFrameA frame = new OrderFrameA();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+
+	public String getFinalPrice()
+	{
+		String retString;
+		int finalprice = orderA.getTotalPrice();
+		String membership;
+		if(orderA.getMembership()) membership = "[會員八五折]";
+		else if(orderA.getTotalPrice()>=600) membership = "[滿六百打九折]";
+		else membership = "";
+		
+		String priceCal = orderA.getPriceRuler()+"x"+orderA.getNumRuler()+
+				"+"+orderA.getPricePen()+"x"+orderA.getNumPen()+
+				"+"+orderA.getPriceInk()+"x"+orderA.getNumInk()+
+				"="+orderA.getTotalPrice();
+		retString = "============價格結算==============\n"+priceCal+"\n"+membership+
+				"\n"+"共計: "+orderA.getDiscountPrice();
+		
+		
+		return retString;
+	
+	}
+	public String getStringShopList()
+	{
+		String retString = "============購物清單=============="+"\n金屬鋁尺: " +orderA.getNumRuler()+" 支"+
+				"\nSKB鋼筆: "+orderA.getNumPen()+" 支"+
+				"\n光之詩墨水螢缥: "+orderA.getNumInk()+" 罐\n"+
+				         "**請點擊結算訂單按鈕計算金額**";
+		return retString;	
+	}
+	/**
+	 * Create the frame.
+	 */
+	public OrderFrameA() {
+            String[] strInkOptions = {"0", "1", "2", "3"};
+		orderA = new OrderInterfaceA(0,0,0);
+		setTitle("爪哇文具店訂單輸入系統");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 315);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JTextArea textArea_display = new JTextArea();
+		textArea_display.setEditable(false);
+		textArea_display.setBounds(10, 180, 414, 88);
+		contentPane.add(textArea_display);
+		
+		JButton btnNewButton = new JButton("結算訂單");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				textArea_display.setText(getFinalPrice());
+			}
+		});
+		btnNewButton.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		btnNewButton.setBounds(10, 145, 87, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnClear = new JButton("清除");
+		btnClear.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		btnClear.setBounds(107, 145, 87, 23);
+		contentPane.add(btnClear);
+		
+		JButton btnPrint = new JButton("列印");
+		btnPrint.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+                                    textArea_display.print();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnPrint.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		btnPrint.setBounds(204, 145, 87, 23);
+		contentPane.add(btnPrint);
+		
+		JButton btnClose = new JButton("關閉");
+		btnClose.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.exit(0);
+			}
+		});
+		btnClose.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		btnClose.setBounds(301, 145, 87, 23);
+		contentPane.add(btnClose);
+		
+		JCheckBox chckbxMembership = new JCheckBox("會員", orderA.getMembership());
+		chckbxMembership.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				orderA.setMembership(chckbxMembership.isSelected());
+			}
+		});
+		chckbxMembership.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		chckbxMembership.setBounds(320, 106, 97, 23);
+		
+		contentPane.add(chckbxMembership);
+		
+		JLabel lblRulerDisplayName = new JLabel("金屬鋁尺");
+		lblRulerDisplayName.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		lblRulerDisplayName.setBounds(10, 50, 90, 15);
+		contentPane.add(lblRulerDisplayName);
+		
+		JLabel lblPenDisplayName = new JLabel("SKB鋼筆");
+		lblPenDisplayName.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		lblPenDisplayName.setBounds(10, 80, 90, 15);
+		contentPane.add(lblPenDisplayName);
+		
+		JLabel lblRulerPrice = new JLabel("New label");
+		lblRulerPrice.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		lblRulerPrice.setBounds(120, 50, 70, 15);
+		lblRulerPrice.setText(OrderInterfaceA.getPriceRuler()+"元/支");
+		contentPane.add(lblRulerPrice);
+		
+		JLabel lblPenPrice = new JLabel("New label");
+		lblPenPrice.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		lblPenPrice.setBounds(120, 80, 70, 15);
+		lblPenPrice.setText(OrderInterfaceA.getPricePen()+"元/支");
+		contentPane.add(lblPenPrice);
+		
+		JLabel lblInkDisplayName = new JLabel("光之詩墨水螢缥");
+		lblInkDisplayName.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		lblInkDisplayName.setBounds(10, 110, 90, 15);
+		
+		
+		contentPane.add(lblInkDisplayName);
+		
+		JLabel lblInkPrice = new JLabel("New label");
+		lblInkPrice.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		lblInkPrice.setBounds(120, 110, 70, 15);
+		lblInkPrice.setText(OrderInterfaceA.getPriceInk()+"元/盒");
+		contentPane.add(lblInkPrice);
+		
+		JComboBox comboBox = new JComboBox(strInkOptions);
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                            orderA.setNumInk(Integer.parseInt((String)comboBox.getSelectedItem()));
+                            textArea_display.setText(getStringShopList());
+			}
+		});
+                comboBox.setSelectedIndex(0);
+		comboBox.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		comboBox.setBounds(200, 105, 97, 23);
+		contentPane.add(comboBox);
+		
+		textfieldPenAmount = new JTextField();
+        ((AbstractDocument)textfieldPenAmount.getDocument()).setDocumentFilter(new OrderSystemDocumentFilter());
+        
+        textfieldPenAmount.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
+                // Code to run when text is inserted (e.g., typing, pasting)
+                orderA.setNumPen(Integer.parseInt(textfieldPenAmount.getText()));
+                textArea_display.setText(getStringShopList());
+            }
+            public void removeUpdate(DocumentEvent e) {
+                // Code to run when text is removed (e.g., backspace, cutting)
+                String text = textfieldPenAmount.getText();
+                if(text.isEmpty())orderA.setNumPen(0);
+                else orderA.setNumPen(Integer.parseInt(text));
+                textArea_display.setText(getStringShopList());
+            }
+            public void changedUpdate(DocumentEvent e) {
+                // Code to run when the *attributes* of the text change (not used for plain text changes)
+            }
+            });
+		textfieldPenAmount.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		textfieldPenAmount.setBounds(200, 75, 96, 21);
+		contentPane.add(textfieldPenAmount);
+		textfieldPenAmount.setColumns(10);
+                textfieldPenAmount.setText(orderA.getNumPen()+"");
+		
+		textfieldRulerAmount = new JTextField();
+		
+                ((AbstractDocument)textfieldRulerAmount.getDocument()).setDocumentFilter(new OrderSystemDocumentFilter());
+        textfieldRulerAmount.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
+                // Code to run when text is inserted (e.g., typing, pasting)
+                System.out.println("Text inserted: " + textfieldRulerAmount.getText());
+                orderA.setNumRuler(Integer.parseInt(textfieldRulerAmount.getText()));
+                textArea_display.setText(getStringShopList());
+            }
+            public void removeUpdate(DocumentEvent e) {
+                // Code to run when text is removed (e.g., backspace, cutting)
+                System.out.println("Text removed: " + textfieldRulerAmount.getText());
+                String text = textfieldRulerAmount.getText();
+                if(text.isEmpty())orderA.setNumRuler(0);
+                else orderA.setNumRuler(Integer.parseInt(text));
+                textArea_display.setText(getStringShopList());
+            }
+            public void changedUpdate(DocumentEvent e) {
+                // Code to run when the *attributes* of the text change (not used for plain text changes)
+            }
+            });
+		textfieldRulerAmount.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		textfieldRulerAmount.setBounds(200, 45, 96, 21);
+		contentPane.add(textfieldRulerAmount);
+		textfieldRulerAmount.setColumns(10);
+                textfieldRulerAmount.setText(orderA.getNumRuler()+"");
+		
+		JLabel lblTime = new JLabel("New label");
+		lblTime.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		lblTime.setBounds(46, 10, 228, 15);
+		contentPane.add(lblTime);
+		
+                /* update */
+                textArea_display.setText(getStringShopList());
+		Timer timer = new Timer(1000, new ActionListener() {
+			@Override
+		    public void actionPerformed(ActionEvent e) {
+		        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		        lblTime.setText("目前時間：" + time);
+		    }			
+		});
+		btnClear.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				orderA.setNumRuler(0);
+				orderA.setNumPen(0);
+				orderA.setNumInk(0);
+				orderA.setMembership(false);
+                                textfieldRulerAmount.setText("0");
+                                textfieldPenAmount.setText("0");
+                                comboBox.setSelectedIndex(0);
+                                textArea_display.setText(getStringShopList());
+
+			}
+		});
+		timer.start();
+		
+
+	}
+}
+package com;
+
+public class OrderInterfaceA {
+
+    static int priceRuler = 120;
+    static int pricePen = 800;
+    static int priceInk = 400;
+
+    private int numRuler;
+    private int numPen;
+    private int numInk;
+    private boolean bMembership;
+    OrderInterfaceA(int ruler, int pen, int ink)
+    {
+    	/* because of limitation in documentfilter,
+    	 * number input here would be 0 or positive integer
+    	 */
+    	this.numRuler = 0;
+    	this.numPen = 0;
+    	this.numInk = 0;
+    	this.bMembership = false;
+       
+    }
+    
+	public static int getPriceRuler() {
+		return priceRuler;
+	}
+	public static void setPriceRuler(int priceRuler) {
+		OrderInterfaceA.priceRuler = priceRuler;
+	}
+	public static int getPricePen() {
+		return pricePen;
+	}
+	public static void setPricePen(int pricePen) {
+		OrderInterfaceA.pricePen = pricePen;
+	}
+	public static int getPriceInk() {
+		return priceInk;
+	}
+	public static void setPriceInk(int priceInk) {
+		OrderInterfaceA.priceInk = priceInk;
+	}
+	public int getNumRuler() {
+		return numRuler;
+	}
+	public void setNumRuler(int numRuler) {
+		this.numRuler = numRuler;
+	}
+	public int getNumPen() {
+		return numPen;
+	}
+	public void setNumPen(int numPen) {
+		this.numPen = numPen;
+	}
+	public int getNumInk() {
+		return numInk;
+	}
+	public void setNumInk(int numInk) {
+		this.numInk = numInk;
+	}
+	public boolean getMembership(){
+		return this.bMembership;
+	}
+	public void setMembership(boolean input)
+	{
+		this.bMembership = input;
+	}
+	public int getTotalPrice()
+    {
+		return numPen*pricePen+numRuler*priceRuler+numInk*priceInk;		
+    }
+	public int getDiscountPrice()
+	{
+		int retprice;
+		int totalprice = numPen*pricePen+numRuler*priceRuler+numInk*priceInk;
+		if(this.bMembership)
+		{
+			retprice = (int)(totalprice * 0.85);			
+		}
+		else if(totalprice>=600){
+			retprice = (int)(totalprice * 0.9);
+		}
+		else retprice = totalprice;
+		return retprice;	
+	}
+
+}
+package com;
+
+
+/* skip import */
+
+/* reference: 
+ * https://stackoverflow.com/questions/9477354/how-to-allow-introducing-only-digits-in-jtextfield
+ */
+public class OrderSystemDocumentFilter extends DocumentFilter {
+    @Override
+    public void insertString(DocumentFilter.FilterBypass fp
+            , int offset, String string, AttributeSet aset)
+                                throws BadLocationException
+    {
+        int len = string.length();
+        boolean isValidInteger = true;
+
+        for (int i = 0; i < len; i++)
+        {
+            if (!Character.isDigit(string.charAt(i)))
+            {
+                isValidInteger = false;
+                break;
+            }
+        }
+        if (isValidInteger)
+            super.insertString(fp, offset, string, aset);
+        else
+            Toolkit.getDefaultToolkit().beep();
+    }
+
+    @Override
+    public void replace(DocumentFilter.FilterBypass fp, int offset
+                    , int length, String string, AttributeSet aset)
+                                        throws BadLocationException
+    {
+        int len = string.length();
+        boolean isValidInteger = true;
+
+        for (int i = 0; i < len; i++)
+        {
+            if (!Character.isDigit(string.charAt(i)))
+            {
+                isValidInteger = false;
+                break;
+            }
+        }
+        if (isValidInteger)
+            super.replace(fp, offset, length, string, aset);
+        else
+            Toolkit.getDefaultToolkit().beep();
+    }
+
+}

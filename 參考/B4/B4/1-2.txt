@@ -1,0 +1,279 @@
+package work1;
+
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
+import java.util.Date;
+import java.util.Calendar;
+import javax.swing.JComboBox;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JTextField;
+import javax.swing.JTextArea;
+import java.awt.print.PrinterException;
+import java.text.MessageFormat;
+import java.awt.event.ActionListener;    // 處理按鈕點擊
+import java.awt.event.ActionEvent;       // 處理按鈕事件
+import javax.swing.JOptionPane;          // 彈出錯誤提示視窗
+import java.text.MessageFormat;
+public class reservation extends JFrame {
+
+	//field
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField 姓名輸入框;
+	private JLabel 姓名;
+	private JLabel 電話;
+	private JTextField 電話輸入框;
+	private JLabel 月份;
+	private JLabel 日;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					reservation frame = new reservation();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * constractors
+	 */
+	public reservation() {
+	    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	    setBounds(100, 100, 800, 600);
+	    contentPane = new JPanel();
+	    contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+	    setContentPane(contentPane);
+	    contentPane.setLayout(null);
+
+	    // 1. --- 先建立所有 UI 元件，但不處理背景 ---
+	    JLabel 預約 = new JLabel("參觀預約時間");
+	    預約.setForeground(Color.YELLOW);
+	    預約.setFont(new Font("方正姚体", Font.ITALIC, 38));
+	    預約.setBounds(0, 10, 281, 84);
+	    contentPane.add(預約);
+
+	    // --- 日期選擇器 JSpinner ---
+	    String[] months = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+	    JComboBox<String> 月份選單 = new JComboBox<>(months);
+	    月份選單.setBounds(100, 209, 47, 40);
+	    contentPane.add(月份選單);
+
+	    String[] days = new String[31];
+	    for (int i = 0; i < 31; i++) days[i] = String.format("%02d", i + 1);
+	    JComboBox<String> 日期選單 = new JComboBox<>(days);
+	    日期選單.setBounds(143, 209, 47, 40);
+	    contentPane.add(日期選單);
+
+	    String[] hours = new String[24];
+	    for (int i = 0; i < 24; i++) hours[i] = String.format("%02d:00", i);
+	    JComboBox<String> 小時選單 = new JComboBox<>(hours);
+	    小時選單.setBounds(190, 209, 75, 40);
+	    contentPane.add(小時選單);
+
+	    // 2. --- 建立其他欄位 ---
+	    姓名輸入框 = new JTextField();
+	    姓名輸入框.setBounds(100, 89, 165, 40);
+	    contentPane.add(姓名輸入框);
+
+	    姓名 = new JLabel("姓名:");
+	    姓名.setForeground(Color.YELLOW);
+	    姓名.setFont(new Font("方正姚体", Font.ITALIC, 25));
+	    姓名.setBounds(27, 89, 63, 40);
+	    contentPane.add(姓名);
+
+	    電話輸入框 = new JTextField();
+	    電話輸入框.setBounds(100, 139, 165, 40);
+	    contentPane.add(電話輸入框);
+	    
+	    
+	    JLabel lblNewLabel;
+	    日 = new JLabel("   日");
+	    日.setForeground(new Color(255, 255, 0));
+	    日.setFont(new Font("方正姚体", Font.ITALIC, 15));
+	    日.setBounds(143, 178, 47, 33);
+	    contentPane.add(日);
+	    JLabel lblNewLabel_1;
+	    月份 = new JLabel("月份");
+	    月份.setForeground(new Color(255, 255, 0));
+	    月份.setFont(new Font("方正姚体", Font.ITALIC, 15));
+	    月份.setBounds(101, 178, 47, 33);
+	    contentPane.add(月份);
+	    JLabel 時間 = new JLabel("   時間");
+	    時間.setForeground(new Color(255, 255, 0));
+	    時間.setBackground(new Color(255, 255, 255));
+	    時間.setFont(new Font("方正姚体", Font.ITALIC, 17));
+	    時間.setBounds(190, 178, 75, 33);
+	    contentPane.add(時間);
+
+	    JLabel 電話標籤 = new JLabel("電話:");
+	    電話標籤.setForeground(Color.YELLOW);
+	    電話標籤.setFont(new Font("方正姚体", Font.ITALIC, 25));
+	    電話標籤.setBounds(27, 139, 63, 40);
+	    contentPane.add(電話標籤);
+
+	    JLabel 日期標籤 = new JLabel("日期:");
+	    日期標籤.setForeground(Color.YELLOW);
+	    日期標籤.setFont(new Font("方正姚体", Font.ITALIC, 25));
+	    日期標籤.setBounds(27, 189, 63, 40);
+	    contentPane.add(日期標籤);
+
+	    JTextArea 反饋 = new JTextArea();
+	    反饋.setBounds(27, 321, 254, 189);
+	    contentPane.add(反饋);
+	    
+	    JButton 清除 = new JButton("清除");
+	    清除.setFont(new Font("方正姚体", Font.ITALIC, 20));
+	    清除.setForeground(new Color(255, 0, 128));
+	    清除.setBounds(206, 518, 75, 33);
+	    contentPane.add(清除);
+	    清除.addActionListener(e -> {
+	        反饋.setText("");
+	        反饋.setForeground(Color.BLACK);
+	    });
+	    
+	    JButton 列印 = new JButton("列印");
+	    列印.setBounds(41, 259, 87, 40);
+	    contentPane.add(列印);
+
+	    列印.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            try {
+	                // 檢查反饋內是否有內容再列印
+	                if (反饋.getText().trim().isEmpty()) {
+	                    JOptionPane.showMessageDialog(null, "沒有內容可以列印！");
+	                    return;
+	                }
+	                反饋.print(); 
+	            } catch (PrinterException ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	    });
+	   
+	    
+	    JButton 確認送出按鈕 = new JButton("確認並送出");
+	    確認送出按鈕.setBounds(138, 259, 127, 40);
+	    確認送出按鈕.addActionListener(e -> {
+	        String name = 姓名輸入框.getText().trim();
+	        String phoneStr = 電話輸入框.getText().trim();
+	        
+	        // 清空上次的反饋內容
+	        反饋.setText("");
+	        // 設定文字顏色為黑色 (避免上次錯誤留下的紅色)
+	        反饋.setForeground(Color.BLACK);
+
+	        // 1. 姓名檢查
+	        if (!name.matches("^[\\u4e00-\\u9fa5]{3,}$")) {
+	            反饋.setForeground(Color.RED); // 錯誤顯示紅色
+	            反饋.setText("【預約失敗】\n原因：請輸入至少 3 個中文字的姓名。");
+	            return;
+	        }
+
+	        // 2. 電話格式檢查
+	        if (!phoneStr.matches("^09\\d{8}$")) {
+	            反饋.setForeground(Color.RED);
+	            反饋.setText("請輸入正確的號碼! 詐騙集團都找不到你!");
+	            return;
+	        }
+
+	        // 3. 營業時間檢查 (10:00~17:00)
+	        String hrStr = (String) 小時選單.getSelectedItem();
+	        int selHour = Integer.parseInt(hrStr.substring(0, 2));
+	        if (selHour < 10 || selHour > 17) {
+	            反饋.setForeground(Color.RED);
+	            反饋.setText("【預約失敗】\n原因：非營業時間。\n開放預約時段為 10:00 ~ 17:00。");
+	            return;
+	        }
+
+	        // 4. 過去時間檢查 (2026年邏輯)
+	        int selMonth = Integer.parseInt((String) 月份選單.getSelectedItem());
+	        int selDay = Integer.parseInt((String) 日期選單.getSelectedItem());
+	        Calendar current = Calendar.getInstance(); 
+	        Calendar selected = Calendar.getInstance();
+	        selected.set(Calendar.MONTH, selMonth - 1);
+	        selected.set(Calendar.DAY_OF_MONTH, selDay);
+	        selected.set(Calendar.HOUR_OF_DAY, selHour);
+	        selected.set(Calendar.MINUTE, 0);
+	        selected.set(Calendar.SECOND, 0);
+	        selected.set(Calendar.MILLISECOND, 0);
+
+	        if (selected.before(current)) {
+	            反饋.setForeground(Color.RED);
+	            反饋.setText("我也想回到過去!");
+	            return;
+	        }
+
+	        // 5. 通過所有檢查，顯示成功結果
+	        String dateString = 月份選單.getSelectedItem() + "/" + 
+	                            日期選單.getSelectedItem() + " " + 
+	                            小時選單.getSelectedItem();
+
+	        反饋.setForeground(new Color(0, 128, 0)); // 成功顯示深綠色
+	        反饋.setText("===== 預約成功 =====\n" +
+	                    "客戶姓名：" + name + "\n" +
+	                    "聯繫電話：" + phoneStr + "\n" +
+	                    "預約時段：" + dateString + "\n" +
+	                    "==================\n" +
+	                    "系統已收到您的預約申請！");
+	    });
+	   
+	    
+	    
+	    
+	    
+	    
+	    contentPane.add(確認送出按鈕);
+
+	    JButton 結束按鈕 = new JButton("Exit");
+	    結束按鈕.setBounds(674, 528, 100, 23);
+	    結束按鈕.addActionListener(e -> dispose());
+	    contentPane.add(結束按鈕);
+
+	   
+	    JLabel 背景圖片 = new JLabel("");
+	 java.net.URL imgUrl = reservation.class.getResource("/work1/images/98757_0.jpg");
+	 if (imgUrl != null) {
+	     ImageIcon icon = new ImageIcon(imgUrl); 
+	     java.awt.Image img = icon.getImage().getScaledInstance(800, 600, java.awt.Image.SCALE_SMOOTH);
+	     背景圖片.setIcon(new ImageIcon(img));
+	 } else {
+	     System.out.println("找不到圖片: /work1/images/98757_0.jpg");
+	 }
+	 背景圖片.setBounds(0, 0, 800, 600);
+	 contentPane.add(背景圖片);
+
+	    contentPane.setComponentZOrder(月份選單, 0);
+	    contentPane.setComponentZOrder(日期選單, 0);
+	    contentPane.setComponentZOrder(小時選單, 0);
+	    contentPane.setComponentZOrder(背景圖片, contentPane.getComponentCount() - 1);
+	    
+	   
+	    
+	    
+	    
+	    
+	    
+	    
+	}
+	
+}
