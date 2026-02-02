@@ -6,15 +6,16 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import model.Administrator;
 import service.Impl.AccountServiceImpl;
-import service.Impl.OAccountServiceImpl;
+import service.Impl.AdminServiceImpl;
+import util.Tool;
 
 public class CreateAccountUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private AccountServiceImpl accountServiceImpl=new AccountServiceImpl();//create account
-	private OAccountServiceImpl oAccountServiceImpl=new OAccountServiceImpl();//create online account
+	private AccountServiceImpl accountServiceImpl=new AccountServiceImpl();
 	
 	/**
 	 * Launch the application.

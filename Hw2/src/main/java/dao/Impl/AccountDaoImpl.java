@@ -36,16 +36,19 @@ public class AccountDaoImpl implements AccountDao{
 	//method
 	@Override
 	public void add(Account account) {
-		String sql="insert into account(bank_account,trans_password,balance,birthday,national_id,address,phone) values(?,?,?,?,?,?,?)";
+		String sql="insert into account(bank_account,trans_password,online_user,online_password,balance,birthday,national_id,address,phone)"
+				+ "values(?,?,?,?,?,?,?,?,?)";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setString(1, account.getBank_account());
 			ps.setString(2, account.getTrans_password());
-			ps.setInt(3, account.getBalance());
-			ps.setString(4, account.getBirthday());
-			ps.setString(5, account.getNational_id());
-			ps.setString(6, account.getAddress());
-			ps.setString(7, account.getPhone());
+			ps.setString(3, account.getOnline_user());
+			ps.setString(4, account.getOnline_password());
+			ps.setInt(5, account.getBalance());
+			ps.setString(6, account.getBirthday());
+			ps.setString(7, account.getNational_id());
+			ps.setString(8, account.getAddress());
+			ps.setString(9, account.getPhone());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("wrong SQL");
@@ -65,7 +68,8 @@ public class AccountDaoImpl implements AccountDao{
 				account.setId(rs.getInt("id"));
 				account.setBank_account(rs.getString("bank_account"));
 				account.setTrans_password(rs.getString("trans_password"));
-				account.setOnline_username(rs.getString("online_username"));
+				account.setOnline_user(rs.getString("online_user"));
+				account.setOnline_password(rs.getString("online_password"));
 				account.setBalance(rs.getInt("balance"));
 				account.setBirthday(rs.getString("birthday"));
 				account.setNational_id(rs.getString("national_id"));
@@ -93,7 +97,8 @@ public class AccountDaoImpl implements AccountDao{
 				account.setId(rs.getInt("id"));
 				account.setBank_account(rs.getString("bank_account"));
 				account.setTrans_password(rs.getString("trans_password"));
-				account.setOnline_username(rs.getString("online_username"));
+				account.setOnline_user(rs.getString("online_user"));
+				account.setOnline_password(rs.getString("online_password"));
 				account.setBalance(rs.getInt("balance"));
 				account.setBirthday(rs.getString("birthday"));
 				account.setNational_id(rs.getString("national_id"));
@@ -108,12 +113,12 @@ public class AccountDaoImpl implements AccountDao{
 		return listAccount;
 	}
 	@Override
-	public List<Account> selectByUser(String online_username) {
-		String sql="select * from account where online_username=?";
+	public List<Account> selectByUser(String online_user) {
+		String sql="select * from account where online_user=?";
 		List<Account> listAccount=new ArrayList<>();
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
-			ps.setString(1, online_username);
+			ps.setString(1, online_user);
 			ResultSet rs=ps.executeQuery();
 			if(rs.next())
 			{
@@ -121,7 +126,8 @@ public class AccountDaoImpl implements AccountDao{
 				account.setId(rs.getInt("id"));
 				account.setBank_account(rs.getString("bank_account"));
 				account.setTrans_password(rs.getString("trans_password"));
-				account.setOnline_username(rs.getString("online_username"));
+				account.setOnline_user(rs.getString("online_user"));
+				account.setOnline_password(rs.getString("online_password"));
 				account.setBalance(rs.getInt("balance"));
 				account.setBirthday(rs.getString("birthday"));
 				account.setNational_id(rs.getString("national_id"));
@@ -137,14 +143,15 @@ public class AccountDaoImpl implements AccountDao{
 	}
 	@Override
 	public void update(Account account) {
-		String sql="update account set trans_password=?,online_username=?,address=?,phone=? where bank_account=?";
+		String sql="update account set trans_password=?,online_password=?,balance=?,address=?,phone=? where bank_account=?";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setString(1, account.getTrans_password());
-			ps.setString(2, account.getOnline_username());
-			ps.setString(3, account.getAddress());
-			ps.setString(4, account.getPhone());
-			ps.setString(5, account.getBank_account());
+			ps.setString(2, account.getOnline_password());
+			ps.setInt(3, account.getBalance());
+			ps.setString(4, account.getAddress());
+			ps.setString(5, account.getPhone());
+			ps.setString(6, account.getBank_account());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("wrong SQL");

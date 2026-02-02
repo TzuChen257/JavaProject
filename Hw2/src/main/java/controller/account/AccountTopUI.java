@@ -8,7 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import controller.LoginUI;
 import model.Account;
-import model.OnlineAccount;
+import model.Administrator;
 import util.Tool;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -57,7 +57,7 @@ public class AccountTopUI extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
-		JLabel username = new JLabel(account.getOnline_username());
+		JLabel username = new JLabel(account.getOnline_user());
 		username.setHorizontalAlignment(SwingConstants.RIGHT);
 		username.setBounds(10, 10, 63, 14);
 		panel.add(username);

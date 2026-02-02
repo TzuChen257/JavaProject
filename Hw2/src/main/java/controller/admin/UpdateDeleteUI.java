@@ -6,10 +6,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import model.Administrator;
+import util.Tool;
+
 public class UpdateDeleteUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private Administrator admin=Tool.readAdmin();//取用檔案
 
 	/**
 	 * Launch the application.

@@ -18,7 +18,7 @@ public class AccountServiceImpl implements AccountService{
 	//method
 	@Override
 	public boolean addAccount(Account account) {
-		boolean isAdd=false;
+		boolean isAdd=false;		
 		if(account.getBalance()>=1000)
 		{
 			accountDaoImpl.add(account);
@@ -56,6 +56,20 @@ public class AccountServiceImpl implements AccountService{
 			return isUpdate;
 		}
 	}
+	@Override
+	public boolean updateOnlinePassword(Account account, String passwordAgain) {
+		boolean isUpdate=false;
+		if(account.getOnline_password().equals(passwordAgain))
+		{
+			accountDaoImpl.update(account);
+			isUpdate=true;
+			return isUpdate;
+		}
+		else
+		{
+			return isUpdate;
+		}
+	}
 	//沒有想到篩選條件??感覺無法在這裡篩選因為不一定有填入???
 	@Override
 	public boolean updateData(Account account) {
@@ -65,8 +79,12 @@ public class AccountServiceImpl implements AccountService{
 		return isUpdate;
 	}
 	@Override
-	public boolean deleteByAccount(String account, String root_password) {
+	public boolean deleteByAccount(String bank_account) {
 		boolean isDelete=false;
+		accountDaoImpl.deleteByAccount(bank_account);
+		isDelete=true;
+		return isDelete;
+		/*
 		if(root_password.equals("root1234"))//最高權限同意刪除
 		{
 			accountDaoImpl.deleteByAccount(account);
@@ -78,5 +96,6 @@ public class AccountServiceImpl implements AccountService{
 			System.out.println("無權限刪除帳號");//顯示在UI?
 			return isDelete;
 		}
+		*/
 	}
 }

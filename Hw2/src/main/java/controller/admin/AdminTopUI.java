@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controller.LoginUI;
-import model.OnlineAccount;
+import model.Administrator;
 import util.Tool;
 
 import javax.swing.JLabel;
@@ -21,7 +21,7 @@ public class AdminTopUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private OnlineAccount oAccount=Tool.readOnlineAccount();//取用檔案
+	private Administrator admin=Tool.readAdmin();//取用檔案
 
 	/**
 	 * Launch the application.
@@ -43,7 +43,7 @@ public class AdminTopUI extends JFrame {
 	 * Create the frame.
 	 */
 	public AdminTopUI() {
-		setTitle("欣新銀行");
+		setTitle("欣新銀行後台系統");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 285, 412);
 		contentPane = new JPanel();
@@ -60,7 +60,7 @@ public class AdminTopUI extends JFrame {
 		lblNewLabel.setBounds(75, 10, 45, 14);
 		panel.add(lblNewLabel);
 		
-		JLabel username = new JLabel(oAccount.getOnline_user());
+		JLabel username = new JLabel(admin.getOnline_user());
 		username.setHorizontalAlignment(SwingConstants.CENTER);
 		username.setBounds(10, 10, 55, 14);
 		panel.add(username);

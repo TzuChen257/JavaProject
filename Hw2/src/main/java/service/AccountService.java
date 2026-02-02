@@ -13,8 +13,8 @@ public interface AccountService {
 	List<Account> findByOnlineUser(String online_username);
 	//update
 	boolean updateTransPassword(Account account, String passwordAgain);
-	//boolean updateOnlinePassword(Account account, String passwordAgain);重寫
+	boolean updateOnlinePassword(Account account, String passwordAgain);
 	boolean updateData(Account account);
 	//delete
-	boolean deleteByAccount(String account, String root_password);
+	boolean deleteByAccount(String bank_account);
 }

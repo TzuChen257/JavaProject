@@ -7,7 +7,8 @@ public class Account implements Serializable{
 	private int id;
 	private String bank_account;
 	private String trans_password;
-	private String online_username;
+	private String online_user;
+	private String online_password;
 	private int balance;
 	private String birthday;
 	private String national_id;
@@ -19,11 +20,13 @@ public class Account implements Serializable{
 		super();
 	}
 	//c02 建立帳戶
-	public Account(String bank_account, String trans_password, int balance, String birthday, String national_id,
-			String address, String phone) {
+	public Account(String bank_account, String trans_password, String online_user, String online_password, int balance,
+			String birthday, String national_id, String address, String phone) {
 		super();
 		this.bank_account = bank_account;
 		this.trans_password = trans_password;
+		this.online_user = online_user;
+		this.online_password = online_password;
 		this.balance = balance;
 		this.birthday = birthday;
 		this.national_id = national_id;
@@ -54,11 +57,17 @@ public class Account implements Serializable{
 	public void setTrans_password(String trans_password) {
 		this.trans_password = trans_password;
 	}
-	public String getOnline_username() {
-		return online_username;
+	public String getOnline_user() {
+		return online_user;
 	}
-	public void setOnline_username(String online_username) {
-		this.online_username = online_username;
+	public void setOnline_user(String online_user) {
+		this.online_user = online_user;
+	}
+	public String getOnline_password() {
+		return online_password;
+	}
+	public void setOnline_password(String online_password) {
+		this.online_password = online_password;
 	}
 	public int getBalance() {
 		return balance;

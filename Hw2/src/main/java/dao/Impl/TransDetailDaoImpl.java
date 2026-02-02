@@ -16,103 +16,92 @@ public class TransDetailDaoImpl implements TransDetailDao{
 	//test_main
 	public static void main(String[] args) {
 		//add
-		new TransDetailDaoImpl().add(new TransactionDetail("13246546546",2,50000));//存款
-		new TransDetailDaoImpl().add(new TransactionDetail("13245646546",1,10000));//提款
-		//new TransDetailDaoImpl().add(new TransactionDetail("88145649511",3,30000,"13246546546"));//轉帳
+		//new TransDetailDaoImpl().add1Withdraw(new TransactionDetail("13246546546",1,5000));//提款
+		//new TransDetailDaoImpl().add2Deposit(new TransactionDetail("13245646546",2,10000));//存款
+		new TransDetailDaoImpl().add3Trans(new TransactionDetail("88145649511",3,30000,"13246546546"));//轉帳
 		//select
-		System.out.println(new TransDetailDaoImpl().selectAll());
-		System.out.println(new TransDetailDaoImpl().selectByAccount("13246546546"));
+		//System.out.println(new TransDetailDaoImpl().selectAll());
+		//System.out.println(new TransDetailDaoImpl().selectByAccount("13246546546"));
 	}
 	//每個method都要用的物件
 	Connection conn=Tool.getDb();
 	//method
 	@Override
-	public void add(TransactionDetail transDetail) {
-		String sqlTransAdd="insert into transaction_detail"
-				+ "(subject_account,trading_activity,trading_amount,income,expenses,object_account,subject_balance,trading_time)"
-				+ " values(?,?,?,?,?,?,?,?)";
-		String sqlSubjectAccount="select * from account where bank_account=?";
+	public void add1Withdraw(TransactionDetail transDetail) {
+		String sql="insert into transaction_detail"
+				+ "(subject_account,trading_activity,expenses,balance_now,trading_time)"
+				+ "values(?,?,?,?,?)";
 		try {
-			PreparedStatement psTransD=conn.prepareStatement(sqlTransAdd);
-			PreparedStatement psSubjectA=conn.prepareStatement(sqlSubjectAccount);
-			psSubjectA.setString(1, transDetail.getSubject_account());
-			ResultSet rsS=psSubjectA.executeQuery();
-			Account account=new Account();
-			if(rsS.next())
-			{
-				account.setBank_account(rsS.getString("bank_account"));
-				account.setBalance(rsS.getInt("balance"));
-			}
-			psTransD.setString(1, transDetail.getSubject_account());
-			psTransD.setInt(2, transDetail.getTrading_activity());
-			psTransD.setInt(3, transDetail.getTrading_amount());
-			psTransD.setString(4, transDetail.getIncome());
-			psTransD.setString(5, transDetail.getExpenses());
-			psTransD.setString(6, transDetail.getObject_account());
-			psTransD.setInt(7, transDetail.getSubject_balance());
-			psTransD.setString(8, transDetail.getTrading_time());
-			psTransD.executeUpdate();
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setString(1, transDetail.getSubject_account());
+			ps.setInt(2, transDetail.getTrading_activity());
+			ps.setInt(3, transDetail.getExpenses());
+			ps.setInt(4, transDetail.getBalance_now());
+			ps.setString(5, transDetail.getTrading_time());
+			ps.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("wrong sql");
 			e.printStackTrace();
 		}
 	}
 	@Override
-	public void addTrans(TransactionDetail transDetail) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void addGetTrans(String subject_account, int trading_amount, String object_account) {
-		// TODO Auto-generated method stub
-		
-	}
-	/*
-	@Override
-	public void add(TransactionDetail transDetail) {
-		String sqlTransAdd="insert into transaction_detail"
-				+ "(subject_account,trading_activity,trading_amount,income,expenses,object_account,subject_balance,trading_time)"
-				+ " values(?,?,?,?,?,?,?,?)";
-		String sqlSubjectAccount="select * from account where bank_account=?";
+	public void add2Deposit(TransactionDetail transDetail) {
+		String sql="insert into transaction_detail"
+				+ "(subject_account,trading_activity,income,balance_now,trading_time)"
+				+ "values(?,?,?,?,?)";
 		try {
-			PreparedStatement psTransD=conn.prepareStatement(sqlTransAdd);
-			PreparedStatement psSubjectA=conn.prepareStatement(sqlSubjectAccount);
-			psSubjectA.setString(1, transDetail.getSubject_account());
-			ResultSet rsS=psSubjectA.executeQuery();
-			Account subAccount=new Account();
-			Account obAccount=new Account();
-			if(rsS.next())
-			{
-				subAccount.setBank_account(rsS.getString("bank_account"));
-				subAccount.setBalance(rsS.getInt("balance"));
-			}
-			if(transDetail.getObject_account()!=null)
-			{
-				String sqlObjectAccount="select * from account where bank_account=?";
-				PreparedStatement psObjectA=conn.prepareStatement(sqlObjectAccount);
-				psObjectA.setString(1, sqlSubjectAccount);
-				ResultSet rsO=psObjectA.executeQuery();
-				if(rsO.next())
-				{
-					obAccount.setBank_account(rsO.getString("bank_account"));
-					obAccount.setBalance(rsO.getInt("balance"));
-				}
-			}
-			psTransD.setString(1, transDetail.getSubject_account());
-			psTransD.setInt(2, transDetail.getTrading_activity());
-			psTransD.setInt(3, transDetail.getTrading_amount());
-			psTransD.setString(4, transDetail.getIncome());
-			psTransD.setString(5, transDetail.getExpenses());
-			psTransD.setString(6, transDetail.getObject_account());
-			psTransD.setInt(7, transDetail.getSubject_balance());
-			psTransD.setString(8, transDetail.getTrading_time());
-			psTransD.executeUpdate();
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setString(1, transDetail.getSubject_account());
+			ps.setInt(2, transDetail.getTrading_activity());
+			ps.setInt(3, transDetail.getIncome());
+			ps.setInt(4, transDetail.getBalance_now());
+			ps.setString(5, transDetail.getTrading_time());
+			ps.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("wrong sql");
 			e.printStackTrace();
 		}
 	}
-	*/
+	@Override
+	public void add3Trans(TransactionDetail transDetail) {
+		String sql="insert into transaction_detail"
+				+ "(subject_account,trading_activity,expenses,balance_now,object_account,trading_time)"
+				+ "values(?,?,?,?,?,?)";
+		try {
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setString(1, transDetail.getSubject_account());
+			ps.setInt(2, transDetail.getTrading_activity());
+			ps.setInt(3, transDetail.getExpenses());
+			ps.setInt(4, transDetail.getBalance_now());
+			ps.setString(5, transDetail.getObject_account());
+			ps.setString(6, transDetail.getTrading_time());
+			ps.executeUpdate();
+			//同步呼叫轉入
+			new TransDetailDaoImpl().add4GetTrans(new TransactionDetail(transDetail.getObject_account(),transDetail.getExpenses(),transDetail.getSubject_account()));
+		} catch (SQLException e) {
+			System.out.println("wrong sql");
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public void add4GetTrans(TransactionDetail transDetail) {
+		String sql="insert into transaction_detail"
+				+ "(subject_account,trading_activity,income,balance_now,object_account,trading_time)"
+				+ "values(?,?,?,?,?,?)";
+		try {
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setString(1, transDetail.getSubject_account());
+			ps.setInt(2, transDetail.getTrading_activity());
+			ps.setInt(3, transDetail.getIncome());
+			ps.setInt(4, transDetail.getBalance_now());
+			ps.setString(5, transDetail.getObject_account());
+			ps.setString(6, transDetail.getTrading_time());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("wrong sql");
+			e.printStackTrace();
+		}
+	}
 	@Override
 	public List<TransactionDetail> selectAll() {
 		String sql="select * from transaction_detail";
@@ -126,11 +115,10 @@ public class TransDetailDaoImpl implements TransDetailDao{
 				transDetail.setId(rs.getInt("id"));
 				transDetail.setSubject_account(rs.getString("subject_account"));
 				transDetail.setTrading_activity(rs.getInt("trading_activity"));
-				transDetail.setTrading_amount(rs.getInt("trading_amount"));
-				transDetail.setIncome(rs.getString("income"));
-				transDetail.setExpenses(rs.getString("expenses"));
+				transDetail.setIncome(rs.getInt("income"));
+				transDetail.setExpenses(rs.getInt("expenses"));
+				transDetail.setBalance_now(rs.getInt("balance_now"));
 				transDetail.setObject_account(rs.getString("object_account"));
-				transDetail.setSubject_balance(rs.getInt("subject_balance"));
 				transDetail.setTrading_time(rs.getString("trading_time"));
 				listTransD.add(transDetail);
 			}
@@ -154,11 +142,10 @@ public class TransDetailDaoImpl implements TransDetailDao{
 				transDetail.setId(rs.getInt("id"));
 				transDetail.setSubject_account(rs.getString("subject_account"));
 				transDetail.setTrading_activity(rs.getInt("trading_activity"));
-				transDetail.setTrading_amount(rs.getInt("trading_amount"));
-				transDetail.setIncome(rs.getString("income"));
-				transDetail.setExpenses(rs.getString("expenses"));
+				transDetail.setIncome(rs.getInt("income"));
+				transDetail.setExpenses(rs.getInt("expenses"));
+				transDetail.setBalance_now(rs.getInt("balance_now"));
 				transDetail.setObject_account(rs.getString("object_account"));
-				transDetail.setSubject_balance(rs.getInt("subject_balance"));
 				transDetail.setTrading_time(rs.getString("trading_time"));
 				listTransD.add(transDetail);
 			}

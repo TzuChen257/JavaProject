@@ -21,7 +21,7 @@ import java.util.Date;
 import javax.swing.Timer;
 
 import model.Account;
-import model.OnlineAccount;
+import model.Administrator;
 import model.TransactionDetail;
 
 public class Tool {
@@ -94,12 +94,12 @@ public class Tool {
 			e.printStackTrace();
 		}
 	}
-	public static void saveOnlineAccount(OnlineAccount oAccount)
+	public static void saveAdmin(Administrator admin)
 	{
 		try {
-			FileOutputStream fos=new FileOutputStream("OnlineAccount.txt");
+			FileOutputStream fos=new FileOutputStream("Admin.txt");
 			ObjectOutputStream oos=new ObjectOutputStream(fos);
-			oos.writeObject(oAccount);
+			oos.writeObject(admin);
 		} catch (FileNotFoundException e) {
 			System.out.println("無存取權限");
 			e.printStackTrace();
@@ -156,13 +156,13 @@ public class Tool {
 		}
 		return account;
 	}
-	public static OnlineAccount readOnlineAccount()
+	public static Administrator readAdmin()
 	{
-		OnlineAccount oAccount=null;
+		Administrator admin=null;
 		try {
 			FileInputStream fis=new FileInputStream("Admin.txt");
 			ObjectInputStream ois=new ObjectInputStream(fis);
-			oAccount=(OnlineAccount) ois.readObject();
+			admin=(Administrator) ois.readObject();
 		} catch (FileNotFoundException e) {
 			System.out.println("無讀取權限");
 			e.printStackTrace();
@@ -173,7 +173,7 @@ public class Tool {
 			System.out.println("查無此類別");
 			e.printStackTrace();
 		}
-		return oAccount;
+		return admin;
 	}
 	public static TransactionDetail readDetail()
 	{

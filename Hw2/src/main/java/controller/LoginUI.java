@@ -9,9 +9,9 @@ import javax.swing.border.EmptyBorder;
 import controller.account.AccountTopUI;
 import controller.admin.AdminTopUI;
 import model.Account;
-import model.OnlineAccount;
+import model.Administrator;
 import service.Impl.AccountServiceImpl;
-import service.Impl.OAccountServiceImpl;
+import service.Impl.AdminServiceImpl;
 import util.Tool;
 
 import javax.swing.JLabel;
@@ -30,7 +30,8 @@ public class LoginUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField online_user;
 	private JPasswordField online_password;
-	private OAccountServiceImpl oAccountServiceImpl=new OAccountServiceImpl();//要用的物件
+	private AdminServiceImpl adminServiceImpl=new AdminServiceImpl();//要用的物件
+	private AccountServiceImpl accountServiceImpl=new AccountServiceImpl();//要用的物件
 
 	/**
 	 * Launch the application.
@@ -109,45 +110,44 @@ public class LoginUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				String message=null;
+				String user=online_user.getText();
+				String keyin=online_password.getText();
 				try
 				{
-					OnlineAccount oAccount=oAccountServiceImpl.findByUser(online_user.getText()).get(0);//有找到表示有此帳號
-					String keyin=online_password.getText();
-					String rightPass=oAccount.getOnline_password();
-					int access=oAccount.getAccess();
+					Administrator admin=adminServiceImpl.findByUser(user).get(0);
+					String rightPass=admin.getOnline_password();
 					if(keyin.equals(rightPass))
 					{
-						if(access==1)//admin
+						Tool.saveAdmin(admin);
+						AdminTopUI adminTopUI=new AdminTopUI();
+						adminTopUI.setVisible(true);
+						dispose();
+					}
+					else message="員工密碼有誤";
+				}
+				catch(IndexOutOfBoundsException e1)
+				{
+					try {
+						Account account=new AccountServiceImpl().findByOnlineUser(user).get(0);
+						String rightPass=account.getOnline_password();
+						if(keyin.equals(rightPass))
 						{
-							Tool.saveOnlineAccount(oAccount);
-							AdminTopUI adminTopUI=new AdminTopUI();
-							adminTopUI.setVisible(true);
-							dispose();
-						}
-						else if(access==2)//account
-						{
-							Account account=new AccountServiceImpl().findByOnlineUser(oAccount.getOnline_user()).get(0);
-							Tool.saveOnlineAccount(oAccount);
 							Tool.saveAccount(account);
 							AccountTopUI accountTopUI=new AccountTopUI();
 							accountTopUI.setVisible(true);
 							dispose();
 						}
-						else
-						{
-							message="無此權限";
-						}
+						else message="使用者密碼有誤";
 					}
-					else message="密碼有誤";
-				}
-				catch(IndexOutOfBoundsException e1)//沒找到表示無此帳號
-				{
-					message="查無此帳號";//??
+					catch(IndexOutOfBoundsException e2)
+					{
+						message="查無此帳號";
+					}
 				}
 				finally
 				{
 					loginMessage.setText(message);
-				}
+				}	
 			}
 		});
 		btnNewButton.setBounds(103, 90, 84, 22);
