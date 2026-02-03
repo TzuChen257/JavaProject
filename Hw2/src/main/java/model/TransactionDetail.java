@@ -15,8 +15,6 @@ public class TransactionDetail implements Serializable{
 	private int balance_now;//交易後
 	private String object_account;//轉帳使用
 	private String trading_time;
-	private AccountServiceImpl accountServiceImpl=new AccountServiceImpl();//new一個可以連線的物件去修改balance
-	//問題：收入跟支出是不是應該要不同項目???如果沒有分項目我可以再顯示時判斷應該放哪嗎
 	//constructor
 	//c01 查詢全部用
 	public TransactionDetail() {
@@ -30,19 +28,11 @@ public class TransactionDetail implements Serializable{
 		this.trading_time = Tool.Time();
 		if(trading_activity==1)
 		{
-			Account subject=accountServiceImpl.findByAccount(subject_account).get(0);//使用時已登入故不會有照不到帳戶的問題就不使用try/catch了
 			this.expenses = trading_amount;
-			this.balance_now=subject.getBalance()-trading_amount;
-			subject.setBalance(balance_now);
-			accountServiceImpl.updateData(subject);
 		}
 		else if(trading_activity==2)
 		{
-			Account subject=accountServiceImpl.findByAccount(subject_account).get(0);//使用時已登入故不會有照不到帳戶的問題就不使用try/catch了
 			this.income = trading_amount;
-			this.balance_now=subject.getBalance()+trading_amount;
-			subject.setBalance(balance_now);
-			accountServiceImpl.updateData(subject);
 		}
 	}
 	//c03 轉帳_轉出(跟別人有關，須自選行為)
@@ -53,13 +43,6 @@ public class TransactionDetail implements Serializable{
 		this.expenses = trading_amount;
 		this.object_account = object_account;
 		this.trading_time = Tool.Time();
-		//balance
-		Account subject=accountServiceImpl.findByAccount(subject_account).get(0);//使用時已登入故不會有照不到帳戶的問題就不使用try/catch了
-		this.balance_now=subject.getBalance()-trading_amount;
-		subject.setBalance(balance_now);
-		accountServiceImpl.updateData(subject);
-		//呼叫對方轉入
-		//new TransactionDetail(object_account, trading_amount, subject_account);
 	}
 	//c04 轉帳_轉入(跟別人有關，毋須自選行為)，呼叫用
 	public TransactionDetail(String subject_account, int trading_amount, String object_account) {
@@ -69,11 +52,6 @@ public class TransactionDetail implements Serializable{
 		this.income = trading_amount;
 		this.object_account = object_account;
 		this.trading_time = Tool.Time();
-		//balance
-		Account subject=accountServiceImpl.findByAccount(subject_account).get(0);//使用時已登入故不會有照不到帳戶的問題就不使用try/catch了
-		this.balance_now=subject.getBalance()+trading_amount;
-		subject.setBalance(balance_now);
-		accountServiceImpl.updateData(subject);
 	}
 	//method
 	public int getId() {

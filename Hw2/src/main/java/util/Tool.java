@@ -33,8 +33,10 @@ public class Tool {
 		//System.out.println(Tool.Time());
 		//save
 		//Tool.saveAccount(new Account("13248544546","541234",1000,"75.04.05","N156875451","Taipei","09132542748"));
+		//Tool.saveTradeActivity(2);
 		//read
 		//System.out.println(Tool.readAccount());
+		//System.out.println(Tool.readTrade());
 	}
 	//trading time
 	public static String Time()
@@ -128,6 +130,7 @@ public class Tool {
 			FileOutputStream fos = new FileOutputStream("Trade.txt");
 			OutputStreamWriter osw = new OutputStreamWriter(fos);
 			osw.write(trade_activity);
+			osw.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("無存取權限");
 			e.printStackTrace();
@@ -200,7 +203,7 @@ public class Tool {
 		try {
 			FileInputStream fis=new FileInputStream("Trade.txt");
 			InputStreamReader isr=new InputStreamReader(fis);
-			isr.read();
+			trade_activity=isr.read();
 		} catch (FileNotFoundException e) {
 			System.out.println("無讀取權限");
 			e.printStackTrace();

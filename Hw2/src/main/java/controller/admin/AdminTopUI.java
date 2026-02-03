@@ -16,6 +16,7 @@ import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Color;
 
 public class AdminTopUI extends JFrame {
 
@@ -52,7 +53,7 @@ public class AdminTopUI extends JFrame {
 		contentPane.setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 52, 250, 79);
+		panel.setBounds(10, 52, 250, 69);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
@@ -71,26 +72,26 @@ public class AdminTopUI extends JFrame {
 		panel.add(lblNewLabel_1);
 		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(10, 134, 250, 234);
+		panel_1.setBounds(10, 131, 250, 237);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 		
 		JLabel lblNewLabel_1_1 = new JLabel("1)");
 		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_1_1.setFont(new Font("新細明體", Font.BOLD, 14));
-		lblNewLabel_1_1.setBounds(42, 17, 27, 35);
+		lblNewLabel_1_1.setBounds(42, 4, 27, 35);
 		panel_1.add(lblNewLabel_1_1);
 		
 		JLabel lblNewLabel_1_1_1 = new JLabel("2)");
 		lblNewLabel_1_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_1_1_1.setFont(new Font("新細明體", Font.BOLD, 14));
-		lblNewLabel_1_1_1.setBounds(42, 68, 27, 35);
+		lblNewLabel_1_1_1.setBounds(42, 49, 27, 35);
 		panel_1.add(lblNewLabel_1_1_1);
 		
 		JLabel lblNewLabel_1_1_1_1 = new JLabel("3)");
 		lblNewLabel_1_1_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_1_1_1_1.setFont(new Font("新細明體", Font.BOLD, 14));
-		lblNewLabel_1_1_1_1.setBounds(42, 118, 27, 35);
+		lblNewLabel_1_1_1_1.setBounds(42, 94, 27, 35);
 		panel_1.add(lblNewLabel_1_1_1_1);
 
 		JPanel panel_2 = new JPanel();
@@ -106,6 +107,18 @@ public class AdminTopUI extends JFrame {
 		JLabel timeNow = new JLabel("");
 		timeNow.setBounds(75, 10, 145, 14);
 		panel_2.add(timeNow);
+		
+		JLabel lblNewLabel_1_1_1_1_1 = new JLabel("4)");
+		lblNewLabel_1_1_1_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_1_1_1_1_1.setFont(new Font("新細明體", Font.BOLD, 14));
+		lblNewLabel_1_1_1_1_1.setBounds(42, 139, 27, 35);
+		panel_1.add(lblNewLabel_1_1_1_1_1);
+
+		JLabel accessErr = new JLabel("");
+		accessErr.setForeground(new Color(255, 0, 0));
+		accessErr.setBounds(185, 149, 55, 14);
+		panel_1.add(accessErr);
+		
 
 		
 		/*****event****/
@@ -119,7 +132,7 @@ public class AdminTopUI extends JFrame {
 				dispose();
 			}
 		});
-		btnNewButton.setBounds(91, 23, 84, 22);
+		btnNewButton.setBounds(91, 10, 84, 22);
 		panel_1.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("新增帳戶");
@@ -131,19 +144,19 @@ public class AdminTopUI extends JFrame {
 				dispose();
 			}
 		});
-		btnNewButton_1.setBounds(91, 73, 84, 22);
+		btnNewButton_1.setBounds(91, 55, 84, 22);
 		panel_1.add(btnNewButton_1);
 		
-		JButton btnNewButton_1_1 = new JButton("修改刪除");
+		JButton btnNewButton_1_1 = new JButton("修改帳戶");
 		btnNewButton_1_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				UpdateDeleteUI updateDeleteUI=new UpdateDeleteUI();
-				updateDeleteUI.setVisible(true);
+				UpdateUserUI updateUserUI=new UpdateUserUI();
+				updateUserUI.setVisible(true);
 				dispose();
 			}
 		});
-		btnNewButton_1_1.setBounds(91, 123, 84, 22);
+		btnNewButton_1_1.setBounds(91, 100, 84, 22);
 		panel_1.add(btnNewButton_1_1);
 		
 		JButton btnNewButton_1_1_1 = new JButton("離開");
@@ -168,6 +181,24 @@ public class AdminTopUI extends JFrame {
 		btnNewButton_1_1_1_1.setBounds(30, 202, 84, 22);
 		panel_1.add(btnNewButton_1_1_1_1);
 		
+		JButton btnNewButton_1_1_2 = new JButton("刪除帳戶");
+		btnNewButton_1_1_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(admin.getAccess()==1)
+				{
+					DeleteUI deleteUI=new DeleteUI();
+					deleteUI.setVisible(true);
+					dispose();
+				}
+				else
+				{
+					accessErr.setText("無此權限");
+				}
+			}
+		});
+		btnNewButton_1_1_2.setBounds(91, 144, 84, 22);
+		panel_1.add(btnNewButton_1_1_2);	
 	}
 
 }

@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import model.Account;
+import model.TransactionDetail;
 import service.Impl.AccountServiceImpl;
 import service.Impl.TransDServiceImpl;
 import javax.swing.JLabel;
@@ -138,13 +139,55 @@ public class AdminSelectUI extends JFrame {
 		transDetailErr.setBounds(344, 19, 91, 14);
 		panel_1.add(transDetailErr);
 		
+		JPanel panel_3 = new JPanel();
+		panel_3.setBounds(10, 391, 519, 37);
+		contentPane.add(panel_3);
+		panel_3.setLayout(null);
+		
 		/******event*****/
 		
 		JButton selectTrade = new JButton("查詢");
 		selectTrade.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//transDServiceImpl;
+				//transDServiceImpl
+				String bank_account=subjectAccount.getText();
+				String show="";
+				int count=0;
+				//view??1234轉文字要想一下
+				/*
+				if(bank_account.equals(""))
+				{
+					List<TransactionDetail> list=transDServiceImpl.selectAllDetail();
+					
+					for(TransactionDetail d:list)
+					{
+						show+="帳號："+d.getSubject_account()+"\t帳戶餘額："+a.getBalance()+
+								"\t生日："+a.getBirthday()+"\t身份證字號："+a.getNational_id()+
+								"\t電話："+a.getPhone()+"\t地址："+a.getAddress()+"\n";//待新增
+						count++;
+					}
+					output.setText(show);
+					dataCount.setText(count+"筆");
+					
+				}
+				else
+				{
+					try
+					{
+						Account a=accountServiceImpl.findByAccount(bank_account).get(0);
+						show+="帳戶餘額："+a.getBalance()+
+								"\t生日："+a.getBirthday()+"\t身份證字號："+a.getNational_id()+
+								"\t電話："+a.getPhone()+"\t地址："+a.getAddress();
+						output.setText(show);
+						dataCount.setText("1筆");
+					}
+					catch(IndexOutOfBoundsException e1)
+					{
+						accountErr.setText("查無此帳號");
+					}
+				}
+				*/
 			}
 		});
 		selectTrade.setBounds(445, 15, 64, 22);
@@ -164,7 +207,7 @@ public class AdminSelectUI extends JFrame {
 					{
 						show+="帳號："+a.getBank_account()+"\t帳戶餘額："+a.getBalance()+
 								"\t生日："+a.getBirthday()+"\t身份證字號："+a.getNational_id()+
-								"\t電話："+a.getPhone()+"\t地址："+a.getAddress();//待新增
+								"\t電話："+a.getPhone()+"\t地址："+a.getAddress()+"\n";//待新增
 						count++;
 					}
 					output.setText(show);
@@ -177,7 +220,7 @@ public class AdminSelectUI extends JFrame {
 						Account a=accountServiceImpl.findByAccount(bank_account).get(0);
 						show+="帳戶餘額："+a.getBalance()+
 								"\t生日："+a.getBirthday()+"\t身份證字號："+a.getNational_id()+
-								"\t電話："+a.getPhone()+"\t地址："+a.getAddress();;
+								"\t電話："+a.getPhone()+"\t地址："+a.getAddress();
 						output.setText(show);
 						dataCount.setText("1筆");
 					}
@@ -191,9 +234,16 @@ public class AdminSelectUI extends JFrame {
 		selectAccount.setBounds(445, 15, 64, 22);
 		panel.add(selectAccount);
 		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBounds(10, 391, 519, 37);
-		contentPane.add(panel_3);
-		panel_3.setLayout(null);
+		JButton btnNewButton = new JButton("回首頁");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				AdminTopUI adminTopUI=new AdminTopUI();
+				adminTopUI.setVisible(true);
+				dispose();
+			}
+		});
+		btnNewButton.setBounds(216, 10, 84, 22);
+		panel_3.add(btnNewButton);
 	}
 }

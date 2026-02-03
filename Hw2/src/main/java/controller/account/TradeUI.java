@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Color;
 
 public class TradeUI extends JFrame {
 
@@ -47,7 +48,7 @@ public class TradeUI extends JFrame {
 	public TradeUI() {
 		setTitle("欣新銀行");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 409, 369);
+		setBounds(100, 100, 409, 381);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -120,7 +121,7 @@ public class TradeUI extends JFrame {
 		panel_2.add(tradingTopic);
 		
 		JPanel objectData = new JPanel();
-		objectData.setBounds(10, 220, 375, 46);
+		objectData.setBounds(10, 220, 375, 60);
 		contentPane.add(objectData);
 		objectData.setLayout(null);
 		
@@ -136,8 +137,13 @@ public class TradeUI extends JFrame {
 		objectAccount.setBounds(129, 10, 189, 25);
 		objectData.add(objectAccount);
 		
+		JLabel transErr = new JLabel("");
+		transErr.setForeground(new Color(255, 0, 0));
+		transErr.setBounds(129, 36, 101, 14);
+		objectData.add(transErr);
+		
 		JPanel panel_4 = new JPanel();
-		panel_4.setBounds(10, 276, 375, 46);
+		panel_4.setBounds(10, 290, 375, 46);
 		contentPane.add(panel_4);
 		panel_4.setLayout(null);
 		
@@ -146,16 +152,19 @@ public class TradeUI extends JFrame {
 		{
 			tradingTopic.setText("提款");
 			tradingLabel.setText("提款");
+			objectData.setVisible(false);
 		}
 		else if(trade_activity==2)
 		{
 			tradingTopic.setText("存款");
 			tradingLabel.setText("存款");
+			objectData.setVisible(false);
 		}
-		else
+		else if(trade_activity==3)
 		{
 			tradingTopic.setText("轉帳");
 			tradingLabel.setText("轉帳");
+			objectData.setVisible(true);
 		}
 		
 		/******event*****/
@@ -164,8 +173,14 @@ public class TradeUI extends JFrame {
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				//String 
 				//showinputdialoge+交易碼
 				//String tradePass=JOptionPane.
+				//確認輸入的是數字
+				//Int tradeAmount=
+				//if()
+				//tradingAmount.getText();
+				//transErr.setText();
 			}
 		});
 		btnNewButton.setBounds(220, 10, 84, 22);
@@ -182,6 +197,5 @@ public class TradeUI extends JFrame {
 		});
 		btnNewButton_1.setBounds(62, 10, 84, 22);
 		panel_4.add(btnNewButton_1);
-
 	}
 }
