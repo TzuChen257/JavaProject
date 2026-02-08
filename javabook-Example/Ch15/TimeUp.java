@@ -1,3 +1,0 @@
-interface TimeUp {
-  void notifyTimeUp();
-}
