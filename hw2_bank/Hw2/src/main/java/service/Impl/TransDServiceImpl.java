@@ -23,12 +23,12 @@ public class TransDServiceImpl implements TransDService{
 	public boolean addActivity1Withdraw(TransactionDetail transDetail) {
 		boolean isadd=false;
 		Account subject=accountServiceImpl.findByAccount(transDetail.getSubject_account()).get(0);
-		if(subject.getBalance()>=transDetail.getExpenses())//如果有錢
+		if(subject.getBalance()>=transDetail.getExpenses()&&transDetail.getExpenses()>0)//如果有錢
 		{
 			transDetail.setBalance_now(subject.getBalance()-transDetail.getExpenses());
 			subject.setBalance(transDetail.getBalance_now());
 			transDetailDaoImpl.addExpenses(transDetail);
-			accountServiceImpl.updateData(subject);
+			accountServiceImpl.updateBalance(subject);
 			isadd=true;
 		}
 		return isadd;
@@ -37,11 +37,14 @@ public class TransDServiceImpl implements TransDService{
 	public boolean addActivity2Deposit(TransactionDetail transDetail) {
 		boolean isadd=false;
 		Account subject=accountServiceImpl.findByAccount(transDetail.getSubject_account()).get(0);
-		transDetail.setBalance_now(subject.getBalance()+transDetail.getIncome());
-		subject.setBalance(transDetail.getBalance_now());
-		transDetailDaoImpl.addIncome(transDetail);
-		accountServiceImpl.updateData(subject);
-		isadd=true;
+		if(transDetail.getIncome()>0)
+		{
+			transDetail.setBalance_now(subject.getBalance()+transDetail.getIncome());
+			subject.setBalance(transDetail.getBalance_now());
+			transDetailDaoImpl.addIncome(transDetail);
+			accountServiceImpl.updateBalance(subject);
+			isadd=true;
+		}
 		return isadd;
 	}
 	@Override
@@ -52,25 +55,25 @@ public class TransDServiceImpl implements TransDService{
 		{
 			Account subject=accountServiceImpl.findByAccount(transDetail.getSubject_account()).get(0);
 			Account object=l.get(0);
-			if(subject.getBalance()>=transDetail.getExpenses())//如果有錢
+			if(subject.getBalance()>=transDetail.getExpenses()&&transDetail.getExpenses()>0)//如果有錢
 			{
 				//subject account
 				transDetail.setBalance_now(subject.getBalance()-transDetail.getExpenses());
 				subject.setBalance(transDetail.getBalance_now());
 				transDetailDaoImpl.addExpenses(transDetail);
-				accountServiceImpl.updateData(subject);
+				accountServiceImpl.updateBalance(subject);
 				//object account
 				TransactionDetail objectDetail=new TransactionDetail(transDetail.getObject_account(),transDetail.getExpenses(),transDetail.getSubject_account());
 				objectDetail.setBalance_now(object.getBalance()+objectDetail.getIncome());
 				object.setBalance(objectDetail.getBalance_now());
 				transDetailDaoImpl.addIncome(objectDetail);
-				accountServiceImpl.updateData(object);
+				accountServiceImpl.updateBalance(object);
 				//結束
 				show="轉帳成功";
 			}
 			else
 			{
-				show="餘額不足";
+				show="餘額不足或有誤";
 			}
 		}
 		else

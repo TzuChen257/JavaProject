@@ -95,17 +95,24 @@ public class TransPassUI extends JFrame {
 					String result=null;
 					if(detail.getTrading_activity()==1)
 					{
-						if(transDServiceImpl.addActivity1Withdraw(detail)) result="交易成功";
-						else result="帳戶餘額不足無法提款";
+						if(transDServiceImpl.addActivity1Withdraw(detail))
+						{
+							result="交易成功";
+						}
+						else result="帳戶餘額不足或數字有誤無法提款";
 					}
 					else if(detail.getTrading_activity()==2)
 					{
-						transDServiceImpl.addActivity2Deposit(detail);
-						result="交易成功";
+						if(transDServiceImpl.addActivity2Deposit(detail))
+						{
+							result="交易成功";
+						}
+						else result="數字有誤無法存款";
 					}
 					else if(detail.getTrading_activity()==3)
 					{
 						result=transDServiceImpl.addActivity3Trans(detail);
+						
 					}
 					JOptionPane.showMessageDialog(null,result+"，返回首頁","交易結果",JOptionPane.INFORMATION_MESSAGE);
 					Account myNew=accountServiceImpl.findByOnlineUser(myAccount.getOnline_user()).get(0);

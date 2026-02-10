@@ -16,6 +16,7 @@ public interface AccountService {
 	int updateAccess(String bank_account, String newPassword, String passwordAgain);
 	int updateOnlinePassword(Account account, String newPassword, String passwordAgain);
 	boolean[] updateData(Account account);
+	void updateBalance(Account account);
 	//delete
 	boolean deleteByAccount(String bank_account);
 }

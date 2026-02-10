@@ -129,6 +129,10 @@ public class AccountServiceImpl implements AccountService{
 		return isCorrect;
 	}
 	@Override
+	public void updateBalance(Account account) {
+		accountDaoImpl.update(account);
+	}
+	@Override
 	public boolean deleteByAccount(String bank_account) {
 		boolean isDelete=false;
 		accountDaoImpl.deleteByAccount(bank_account);
