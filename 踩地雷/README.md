@@ -56,14 +56,6 @@ src/main/java
 4. 遊戲結束後會寫入 result 紀錄
 5. 透過「排行榜」查看 Top10 + 自己（You 高亮）
 6. 在結果排行榜可匯出 Excel 報表
-
-## UI 主題
-
-全系統 UI 已統一為「胡桃 Kurumi」主題色系（#947A6D），包含：
-
-- 主選單、登入/註冊、個人資訊、每日簽到、排行榜、三關卡 UI
-- 表格樣式統一（Header、Row height、自己高亮）
-
 ---
 
 如需調整關卡設定（xMax/yMax/bombNum）或等級門檻，可參考 `util/gameSettings` 與 `controller/gameLevel` 相關檔案。
