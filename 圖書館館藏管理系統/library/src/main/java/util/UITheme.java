@@ -20,9 +20,9 @@ public class UITheme {
     public static final Color TEXT = new Color(46, 43, 38);
     public static final Color MUTED = new Color(120, 116, 105);
 
-    public static final Font H1 = new Font("SansSerif", Font.BOLD, 22);
-    public static final Font H2 = new Font("SansSerif", Font.BOLD, 16);
-    public static final Font BASE = new Font("SansSerif", Font.PLAIN, 14);
+    public static final Font H1   = new Font("Microsoft JhengHei", Font.BOLD, 22);
+    public static final Font H2   = new Font("Microsoft JhengHei", Font.BOLD, 16);
+    public static final Font BASE = new Font("Microsoft JhengHei", Font.PLAIN, 14);
 
     private static final Border CARD = BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(220, 216, 206)),
