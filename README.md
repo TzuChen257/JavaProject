@@ -26,22 +26,7 @@
 
 ---
 
-### 2) 欣新銀行｜ATM 與後台管理系統
-📁 資料夾：**銀行ATM與後台系統**  
-🔗 專案連結：https://github.com/TzuChen257/JavaProject/tree/main/%E9%8A%80%E8%A1%8CATM%E8%88%87%E5%BE%8C%E5%8F%B0%E7%B3%BB%E7%B5%B1
-
-**技術亮點**
-- Java + Maven，採 **DAO / Service 分層**、統一例外處理、輸入驗證、資源關閉優化
-- 介面風格穩重藍色系
-
-**核心功能**
-- 使用者端：登入、查詢餘額、存提款、轉帳、修改密碼、列印/查詢個人交易明細
-- 管理員端：新增帳戶、刪除帳戶、修改資料、查詢交易紀錄
-- 資料儲存：以文字檔維護（如 account/admin/交易明細）
-
----
-
-### 3) Minesweeper（踩地雷）｜Java MVC/DAO + MySQL
+### 2)  Minesweeper（踩地雷）積分與排行榜｜Java MVC/DAO + MySQL
 📁 資料夾：**踩地雷**  
 🔗 專案連結：https://github.com/TzuChen257/JavaProject/tree/main/%E8%B8%A9%E5%9C%B0%E9%9B%B7
 
@@ -61,6 +46,21 @@
 
 ---
 
+### 3) 欣新銀行｜ATM 與後台管理系統
+📁 資料夾：**銀行ATM與後台系統**  
+🔗 專案連結：https://github.com/TzuChen257/JavaProject/tree/main/%E9%8A%80%E8%A1%8CATM%E8%88%87%E5%BE%8C%E5%8F%B0%E7%B3%BB%E7%B5%B1
+
+**技術亮點**
+- Java + Maven，採 **DAO / Service 分層**、統一例外處理、輸入驗證、資源關閉優化
+- 介面風格穩重藍色系
+
+**核心功能**
+- 使用者端：登入、查詢餘額、存提款、轉帳、修改密碼、列印/查詢個人交易明細
+- 管理員端：新增帳戶、刪除帳戶、修改資料、查詢交易紀錄
+- 資料儲存：以文字檔維護（如 account/admin/交易明細）
+
+---
+
 ### 4) 火鍋店｜內用/外用點餐系統（Java GUI）
 📁 資料夾：**火鍋店內外用點餐系統**  
 🔗 專案連結：https://github.com/TzuChen257/JavaProject/tree/main/%E7%81%AB%E9%8D%8B%E5%BA%97%E5%85%A7%E5%A4%96%E7%94%A8%E9%BB%9E%E9%A4%90%E7%B3%BB%E7%B5%B1
@@ -70,5 +70,5 @@
 
 **核心功能**
 - 內用/外用流程分流
-- 菜單選擇 → 加入清單 → 訂單結算（可擴充：備註、折扣、發票/收據）
+- 菜單選擇 → 加入清單 → 訂單結算
 - 適合展示：GUI 互動設計、資料結構整理、事件驅動處理（ActionListener）
